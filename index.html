@@ -790,37 +790,7 @@
     </div>
 
     <div class="client-grid" id="clientGrid">
-      <div class="client-card">
-        <img src="zaitoon-grills.png" alt="Zaitoon Grills">
-      </div>
-
-      <div class="client-card">
-        <img src="anna-idli.png" alt="Anna Idli">
-      </div>
-
-      <div class="client-card">
-        <img src="anna-idli-express.png" alt="Anna Idli Express">
-      </div>
-
-      <div class="client-card">
-        <img src="hotel-shubhashree.png" alt="Hotel Shubhashree">
-      </div>
-
-      <div class="client-card">
-        <img src="oviya.png" alt="Oviya">
-      </div>
-
-      <div class="client-card">
-        <img src="cake-walk.png" alt="Cake Walk">
-      </div>
-
-      <div class="client-card">
-        <img src="hotel-vishram.png" alt="Hotel Vishram">
-      </div>
-
-      <div class="client-card">
-        <img src="mujawar-dental.png" alt="Mujawar Dental and Face Hospital">
-      </div>
+      <p class="muted">Loading our clients...</p>
     </div>
   </div>
 </section>
@@ -1123,7 +1093,7 @@
     }
 
     // LOAD VISIBLE CLIENTS FROM SUPABASE
-    // Existing logo cards are retained; duplicate names are skipped.
+    // The Clients section is fully controlled by the Admin Panel.
     async function loadClients() {
       const grid = document.getElementById('clientGrid');
 
@@ -1135,36 +1105,32 @@
           .order('display_order', { ascending: true });
 
         if (error) throw error;
-        if (!data || data.length === 0) return;
 
-        const existingNames = Array.from(
-          grid.querySelectorAll('.client-card img')
-        ).map(function (img) {
-          return (img.alt || '').trim().toLowerCase();
+        const clientsWithLogos = (data || []).filter(function (client) {
+          return client.name && safeMediaURL(client.logo_url);
         });
 
-        data.forEach(function (client) {
-          const name = (client.name || '').trim();
+        if (clientsWithLogos.length === 0) {
+          grid.innerHTML =
+            '<p class="muted">Our client brands will be showcased here soon.</p>';
+          return;
+        }
+
+        grid.innerHTML = clientsWithLogos.map(function (client) {
+          const name = escapeHTML(client.name);
           const logoURL = safeMediaURL(client.logo_url);
 
-          if (!name || !logoURL) return;
-          if (existingNames.includes(name.toLowerCase())) return;
-
-          const card = document.createElement('div');
-          card.className = 'client-card';
-
-          const img = document.createElement('img');
-          img.src = logoURL;
-          img.alt = name;
-          img.loading = 'lazy';
-
-          card.appendChild(img);
-          grid.appendChild(card);
-          existingNames.push(name.toLowerCase());
-        });
+          return `
+            <div class="client-card">
+              <img src="${logoURL}" alt="${name}" loading="lazy">
+            </div>
+          `;
+        }).join('');
 
       } catch (error) {
         console.error('Clients loading error:', error);
+        grid.innerHTML =
+          '<p class="muted">Our clients are temporarily unavailable. Please visit again soon.</p>';
       }
     }
 
