@@ -13,6 +13,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     :root {
       --bg: #080808;
@@ -36,7 +38,6 @@
     }
 
     a { color: inherit; text-decoration: none; }
-
     img { max-width: 100%; }
 
     .container {
@@ -46,9 +47,7 @@
 
     .gold { color: var(--gold); }
 
-    .section {
-      padding: 95px 0;
-    }
+    .section { padding: 95px 0; }
 
     .section-intro {
       max-width: 680px;
@@ -64,13 +63,8 @@
       margin-bottom: 12px;
     }
 
-    h1, h2, h3 {
-      line-height: 1.2;
-    }
-
-    h1, h2 {
-      font-family: 'Playfair Display', serif;
-    }
+    h1, h2, h3 { line-height: 1.2; }
+    h1, h2 { font-family: 'Playfair Display', serif; }
 
     h2 {
       font-size: clamp(32px, 5vw, 48px);
@@ -78,9 +72,7 @@
     }
 
     .section-intro p,
-    .muted {
-      color: var(--muted);
-    }
+    .muted { color: var(--muted); }
 
     .btn {
       display: inline-block;
@@ -286,16 +278,33 @@
       min-height: 220px;
       background: linear-gradient(145deg, #191919, #292216);
       border: 1px solid var(--line);
-      padding: 25px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       transition: .25s;
+      overflow: hidden;
     }
 
     .portfolio-card:hover {
       border-color: var(--gold);
       transform: translateY(-5px);
+    }
+
+    .portfolio-card img {
+      width: calc(100% + 40px);
+      max-width: none;
+      height: 190px;
+      object-fit: cover;
+      margin: -20px -20px 16px;
+    }
+
+    .portfolio-card video {
+      width: calc(100% + 40px);
+      max-width: none;
+      max-height: 220px;
+      background: #000;
+      margin: -20px -20px 16px;
     }
 
     .portfolio-card small {
@@ -306,8 +315,12 @@
       margin-bottom: 8px;
     }
 
-    .portfolio-card h3 {
-      font-size: 21px;
+    .portfolio-card h3 { font-size: 21px; }
+
+    .portfolio-card p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 10px;
     }
 
     /* CLIENTS */
@@ -464,9 +477,7 @@
       border: 1px solid var(--line);
     }
 
-    .contact-item {
-      margin: 20px 0;
-    }
+    .contact-item { margin: 20px 0; }
 
     .contact-item strong {
       color: var(--gold);
@@ -734,7 +745,7 @@
     </div>
   </section>
 
-  <!-- PORTFOLIO -->
+  <!-- PORTFOLIO - SUPABASE DYNAMIC -->
   <section class="section" id="portfolio">
     <div class="container">
       <div class="section-intro">
@@ -743,36 +754,8 @@
         <p>A selection of creative projects and brand collaborations.</p>
       </div>
 
-      <div class="portfolio-grid">
-        <div class="portfolio-card">
-          <small>Food & Restaurant</small>
-          <h3>Zaitoon Grills</h3>
-        </div>
-
-        <div class="portfolio-card">
-          <small>Food & Restaurant</small>
-          <h3>Anna Idli Express</h3>
-        </div>
-
-        <div class="portfolio-card">
-          <small>Hospitality</small>
-          <h3>Hotel Shubhashree</h3>
-        </div>
-
-        <div class="portfolio-card">
-          <small>Healthcare</small>
-          <h3>Mujawar Dental & Face Hospital</h3>
-        </div>
-
-        <div class="portfolio-card">
-          <small>Beauty & Lifestyle</small>
-          <h3>Oviya</h3>
-        </div>
-
-        <div class="portfolio-card">
-          <small>Photography & Events</small>
-          <h3>Model Shoots & Events</h3>
-        </div>
+      <div class="portfolio-grid" id="portfolioGrid">
+        <p class="muted">Loading our latest projects...</p>
       </div>
     </div>
   </section>
@@ -1031,6 +1014,7 @@
   </a>
 
   <script>
+    // MOBILE MENU
     const menuToggle = document.getElementById('menuToggle');
     const navLinks = document.getElementById('navLinks');
 
@@ -1044,7 +1028,105 @@
       });
     });
 
+    // CURRENT YEAR
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // SUPABASE CONNECTION
+    const SUPABASE_URL = 'https://kwczmrtgzuijunwkvkej.supabase.co';
+
+    // Replace this placeholder with your existing sb_publishable key
+    const SUPABASE_KEY = 'sb_publishable_-O2kws00bL8L1nXiCVOlag_zhVa9mac';
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    // SAFE HTML TEXT
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, function (char) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[char];
+      });
+    }
+
+    // SAFE URL FOR MEDIA
+    function safeMediaURL(value) {
+      if (!value) return '';
+
+      try {
+        const url = new URL(value);
+
+        if (url.protocol === 'https:' || url.protocol === 'http:') {
+          return escapeHTML(url.href);
+        }
+      } catch (error) {
+        return '';
+      }
+
+      return '';
+    }
+
+    // LOAD PUBLISHED PROJECTS FROM SUPABASE
+    async function loadPortfolio() {
+      const grid = document.getElementById('portfolioGrid');
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('projects')
+          .select('id, title, category, description, cover_image_url, video_url, is_featured, is_published, created_at')
+          .eq('is_published', true)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          grid.innerHTML =
+            '<p class="muted">Our latest projects will be showcased here soon.</p>';
+          return;
+        }
+
+        grid.innerHTML = data.map(function (project) {
+          const imageURL = safeMediaURL(project.cover_image_url);
+          const videoURL = safeMediaURL(project.video_url);
+
+          const imageHTML = imageURL
+            ? `<img src="${imageURL}" alt="${escapeHTML(project.title || 'Project')}" loading="lazy">`
+            : '';
+
+          const videoHTML = videoURL
+            ? `<video controls preload="metadata">
+                 <source src="${videoURL}">
+                 Your browser does not support video playback.
+               </video>`
+            : '';
+
+          return `
+            <article class="portfolio-card">
+              ${imageHTML}
+              ${videoHTML}
+              <small>${escapeHTML(project.category || 'Creative Project')}</small>
+              <h3>${escapeHTML(project.title || 'Untitled Project')}</h3>
+              ${project.description
+                ? `<p>${escapeHTML(project.description)}</p>`
+                : ''}
+            </article>
+          `;
+        }).join('');
+
+      } catch (error) {
+        console.error('Portfolio loading error:', error);
+        grid.innerHTML =
+          '<p class="muted">Portfolio is temporarily unavailable. Please visit again soon.</p>';
+      }
+    }
+
+    loadPortfolio();
   </script>
 
 </body>
