@@ -417,6 +417,18 @@
       margin-bottom: 22px;
     }
 
+    .package-features {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      padding-left: 20px;
+      margin: 0 0 22px;
+    }
+
+    .package-features li {
+      margin-bottom: 8px;
+    }
+
     /* PROCESS */
 
     .process-grid {
@@ -1177,12 +1189,20 @@
             ? `Starting ₹${price.toLocaleString('en-IN')}`
             : 'Custom Quote';
 
-          const features = Array.isArray(pkg.features) ? pkg.features : [];
+          // Features may be saved as separate array items or as one
+          // multiline text value. Split multiline entries into individual bullets.
+          const rawFeatures = Array.isArray(pkg.features) ? pkg.features : [];
+          const features = rawFeatures
+            .flatMap(function (feature) {
+              return String(feature || '').split(/\\r?\\n/);
+            })
+            .map(function (feature) { return feature.trim(); })
+            .filter(Boolean);
 
           const featuresHTML = features.length
-            ? `<ul style="color:#aaa; font-size:14px; padding-left:20px; margin-bottom:22px;">
+            ? `<ul class="package-features">
                 ${features.map(function (feature) {
-                  return `<li style="margin-bottom:8px;">${escapeHTML(feature)}</li>`;
+                  return `<li>${escapeHTML(feature)}</li>`;
                 }).join('')}
               </ul>`
             : '';
