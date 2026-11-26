@@ -5,456 +5,1047 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#080808">
-  <meta name="description" content="Royal Digital - Creative video production, branding, photography and digital marketing in Vijayapura.">
-  <title>Royal Digital | Creative. Digital. Royal.</title>
-
-  <!-- Royal Digital Favicon -->
+  <title>Royal Digital | Creative & Digital Agency</title>
+  <meta name="description" content="Royal Digital - Video production, photography, graphic designing, branding and social media management in Vijayapura, Karnataka.">
   <link rel="icon" type="image/png" href="royal-icon.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --bg: #080808;
-      --panel: #111111;
-      --gold: #d6ad58;
-      --gold-light: #f2d99b;
-      --white: #f7f4ed;
-      --muted: #aaa49a;
-      --line: rgba(214,173,88,.22);
+      --surface: #111111;
+      --gold: #d6ad60;
+      --gold-light: #f0d28e;
+      --white: #ffffff;
+      --muted: #aaaaaa;
+      --line: rgba(214,173,96,.22);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
       color: var(--white);
-      font-family: "DM Sans", sans-serif;
-      line-height: 1.65;
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.7;
     }
 
     a { color: inherit; text-decoration: none; }
 
-    .container { width: min(1120px, 90%); margin: auto; }
+    img { max-width: 100%; }
+
+    .container {
+      width: min(1120px, 90%);
+      margin: auto;
+    }
 
     .gold { color: var(--gold); }
+
+    .section {
+      padding: 95px 0;
+    }
+
+    .section-intro {
+      max-width: 680px;
+      margin-bottom: 45px;
+    }
 
     .eyebrow {
       color: var(--gold);
       text-transform: uppercase;
       letter-spacing: 3px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
+      margin-bottom: 12px;
     }
 
-    h1, h2, h3 { line-height: 1.15; }
+    h1, h2, h3 {
+      line-height: 1.2;
+    }
 
-    h1, h2 { font-family: "Playfair Display", serif; }
+    h1, h2 {
+      font-family: 'Playfair Display', serif;
+    }
 
-    h2 { font-size: clamp(32px, 5vw, 48px); margin: 12px 0 18px; }
+    h2 {
+      font-size: clamp(32px, 5vw, 48px);
+      margin-bottom: 17px;
+    }
 
-    p { color: var(--muted); }
+    .section-intro p,
+    .muted {
+      color: var(--muted);
+    }
 
     .btn {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      padding: 13px 22px;
-      border: 1px solid var(--gold);
-      border-radius: 3px;
-      color: #090909;
+      display: inline-block;
+      padding: 13px 25px;
       background: var(--gold);
+      color: #080808;
+      border-radius: 3px;
+      font-weight: 800;
+      transition: .25s;
+    }
+
+    .btn:hover {
+      background: var(--gold-light);
+      transform: translateY(-3px);
+    }
+
+    .btn-outline {
+      display: inline-block;
+      padding: 12px 24px;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      border-radius: 3px;
       font-weight: 700;
       transition: .25s;
     }
 
-    .btn:hover { background: transparent; color: var(--gold); }
+    .btn-outline:hover {
+      background: var(--gold);
+      color: #080808;
+    }
 
-    .btn-outline { background: transparent; color: var(--gold); }
-
-    .btn-outline:hover { background: var(--gold); color: #090909; }
+    /* HEADER */
 
     header {
-      position: sticky; top: 0; z-index: 10;
-      background: rgba(8,8,8,.94);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(8,8,8,.96);
       border-bottom: 1px solid var(--line);
       backdrop-filter: blur(12px);
     }
 
-    .nav {
-      min-height: 76px;
-      display: flex; align-items: center; justify-content: space-between;
+    .navbar {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       gap: 20px;
     }
 
-    .logo { font-size: 21px; font-weight: 800; letter-spacing: 1px; }
-
-    .logo span { color: var(--gold); }
-
-    .nav-links { display: flex; gap: 25px; align-items: center; }
-
-    .nav-links a { font-size: 13px; color: #ddd; }
-
-    .nav-links a:hover { color: var(--gold); }
-
-    .menu-btn {
-      display: none; border: 1px solid var(--line);
-      background: transparent; color: var(--gold);
-      padding: 8px 12px; font-size: 20px;
-    }
-
-    .hero {
-      min-height: 650px; display: flex; align-items: center;
-      position: relative; overflow: hidden;
-      background:
-        radial-gradient(ellipse at 80% 40%, rgba(180,133,49,.16), transparent 42%),
-        linear-gradient(110deg, #080808 35%, #15110a 100%);
-    }
-
-    .hero:after {
-      content: "RD"; position: absolute; right: 7%; top: 13%;
-      font-family: "Playfair Display", serif; font-size: clamp(180px, 32vw, 420px);
-      font-weight: 800; color: rgba(214,173,88,.045); line-height: 1;
-      pointer-events: none;
-    }
-
-    .hero-content { position: relative; z-index: 1; max-width: 720px; padding: 100px 0; }
-
-    .hero h1 { font-size: clamp(48px, 8vw, 86px); margin: 20px 0; }
-
-    .hero h1 span { color: var(--gold); }
-
-    .hero p { max-width: 580px; font-size: 17px; margin-bottom: 30px; }
-
-    .actions { display: flex; gap: 13px; flex-wrap: wrap; }
-
-    section { padding: 90px 0; }
-
-    .section-intro { max-width: 650px; margin-bottom: 38px; }
-
-    .about-grid, .contact-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 45px; align-items: center;
-    }
-
-    .about-art {
-      min-height: 330px; display: grid; place-items: center;
-      border: 1px solid var(--line);
-      background: radial-gradient(circle, #302516, #111 65%);
-      padding: 25px;
-    }
-
-    .about-art img {
-      width: 85%;
-      max-width: 320px;
-      max-height: 260px;
-      height: auto;
+    .header-logo img {
+      width: 165px;
+      height: 58px;
       object-fit: contain;
       display: block;
     }
 
-    .stats { display: flex; gap: 30px; margin-top: 28px; flex-wrap: wrap; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 23px;
+    }
 
-    .stats strong { display: block; color: var(--gold); font-size: 24px; }
+    .nav-links a {
+      font-size: 13px;
+      color: #dddddd;
+      transition: .2s;
+    }
 
-    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .nav-links a:hover { color: var(--gold); }
 
-    .card {
-      padding: 27px; background: var(--panel);
-      border: 1px solid var(--line); border-radius: 5px;
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 7px 12px;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    /* HERO */
+
+    .hero {
+      min-height: 650px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 80% 35%, rgba(214,173,96,.14), transparent 40%),
+        linear-gradient(120deg, #080808, #12100b 65%, #080808);
+    }
+
+    .hero-content {
+      max-width: 780px;
+      padding: 100px 0;
+    }
+
+    .hero-tag {
+      color: var(--gold);
+      letter-spacing: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      font-size: clamp(48px, 8vw, 82px);
+      margin-bottom: 22px;
+    }
+
+    .hero p {
+      color: #bbbbbb;
+      max-width: 590px;
+      font-size: 17px;
+      margin-bottom: 32px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    /* ABOUT */
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 55px;
+      align-items: center;
+    }
+
+    .about-logo {
+      min-height: 340px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 35px;
+    }
+
+    .about-logo img {
+      width: 100%;
+      max-width: 390px;
+      object-fit: contain;
+    }
+
+    .about-copy p {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    /* SERVICES */
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 28px;
       transition: .25s;
     }
 
-    .card:hover { transform: translateY(-5px); border-color: var(--gold); }
+    .service-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--gold);
+    }
 
-    .card .number { color: var(--gold); font-size: 13px; letter-spacing: 2px; }
+    .service-number {
+      color: var(--gold);
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 22px;
+    }
 
-    .card h3 { margin: 15px 0 10px; font-size: 20px; }
+    .service-card h3 {
+      font-size: 19px;
+      margin-bottom: 12px;
+    }
+
+    .service-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* PORTFOLIO */
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
 
     .portfolio-card {
-      min-height: 230px; display: flex; flex-direction: column;
-      justify-content: flex-end; padding: 24px;
-      background: linear-gradient(145deg, #302516, #121212 65%);
-      border: 1px solid var(--line); border-radius: 5px;
+      min-height: 220px;
+      background: linear-gradient(145deg, #191919, #292216);
+      border: 1px solid var(--line);
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      transition: .25s;
     }
 
-    .portfolio-card:nth-child(2n) { background: linear-gradient(145deg, #222, #111 70%); }
-
-    .portfolio-card h3 { margin: 8px 0; }
-
-    .portfolio-card small { color: var(--gold); letter-spacing: 1px; }
-
-    .why { background: #0d0d0d; }
-
-    .price-card { position: relative; }
-
-    .price-card.featured { border-color: var(--gold); }
-
-    .price-card .tag { color: var(--gold); font-size: 11px; letter-spacing: 2px; }
-
-    .price-card ul { list-style: none; margin: 20px 0; color: var(--muted); }
-
-    .price-card li { padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
-
-    .price-card li:before { content: "✦ "; color: var(--gold); }
-
-    .steps { counter-reset: step; }
-
-    .step { display: flex; gap: 18px; margin: 20px 0; }
-
-    .step:before {
-      counter-increment: step; content: "0" counter(step);
-      color: var(--gold); font-size: 22px; font-weight: 700;
+    .portfolio-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-5px);
     }
+
+    .portfolio-card small {
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .portfolio-card h3 {
+      font-size: 21px;
+    }
+
+    /* CLIENTS */
+
+    .client-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .client-card {
+      min-height: 155px;
+      padding: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #111111;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      transition: .25s;
+    }
+
+    .client-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--gold);
+    }
+
+    .client-card img {
+      width: 100%;
+      max-width: 180px;
+      height: 95px;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* WHY CHOOSE US */
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .why-card {
+      padding: 25px;
+      background: var(--surface);
+      border-left: 2px solid var(--gold);
+    }
+
+    .why-card h3 {
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .why-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* PRICING */
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .price-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 32px 25px;
+    }
+
+    .price-card.featured {
+      border-color: var(--gold);
+      background: linear-gradient(145deg, #17140e, #111111);
+    }
+
+    .price-card h3 {
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    .price-label {
+      color: var(--gold);
+      font-size: 25px;
+      font-weight: 800;
+      margin: 15px 0;
+    }
+
+    .price-card p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    /* PROCESS */
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .process-card {
+      padding: 22px;
+      border-top: 1px solid var(--gold);
+      background: var(--surface);
+    }
+
+    .process-card span {
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .process-card h3 {
+      margin: 12px 0 8px;
+      font-size: 18px;
+    }
+
+    .process-card p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* CTA */
 
     .cta {
-      text-align: center; border-block: 1px solid var(--line);
-      background: radial-gradient(ellipse at center, #241b0d, #090909 70%);
+      text-align: center;
+      padding: 85px 20px;
+      background: linear-gradient(120deg, #1a160e, #0d0d0d);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
     }
 
-    .cta p { max-width: 600px; margin: 0 auto 25px; }
+    .cta p {
+      color: var(--muted);
+      margin: 15px auto 28px;
+      max-width: 600px;
+    }
 
-    .contact-details p { margin: 12px 0; }
+    /* CONTACT */
 
-    footer { padding: 30px 0; border-top: 1px solid var(--line); }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 35px;
+    }
 
-    .footer-row {
-      display: flex; justify-content: space-between;
-      gap: 20px; flex-wrap: wrap; align-items: center;
+    .contact-info {
+      background: var(--surface);
+      padding: 30px;
+      border: 1px solid var(--line);
+    }
+
+    .contact-item {
+      margin: 20px 0;
+    }
+
+    .contact-item strong {
+      color: var(--gold);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .contact-item p,
+    .contact-item a {
+      color: #cccccc;
+      overflow-wrap: anywhere;
+    }
+
+    .contact-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 30px;
+    }
+
+    .contact-logo img {
+      max-width: 340px;
+      width: 100%;
+      object-fit: contain;
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 40px 0 22px;
+      background: #050505;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 25px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid var(--line);
     }
 
     .footer-logo img {
       width: 190px;
-      max-width: 100%;
-      height: auto;
-      display: block;
+      height: 75px;
+      object-fit: contain;
     }
 
-    footer p, footer a { font-size: 13px; }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
 
-    .social { color: var(--gold); }
+    .footer-links a {
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-    @media (max-width: 800px) {
-      .menu-btn { display: block; }
+    .footer-bottom {
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: #888888;
+      font-size: 12px;
+    }
+
+    .footer-bottom span { color: var(--gold); }
+
+    /* WHATSAPP */
+
+    .whatsapp-float {
+      position: fixed;
+      bottom: 22px;
+      right: 20px;
+      z-index: 999;
+      background: #25D366;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 50px;
+      font-weight: 800;
+      box-shadow: 0 5px 20px rgba(0,0,0,.4);
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 900px) {
+      .nav-links { gap: 13px; }
+      .nav-links a { font-size: 12px; }
+      .client-grid { grid-template-columns: repeat(3, 1fr); }
+      .process-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 700px) {
+      .navbar { min-height: 70px; }
+      .header-logo img { width: 140px; height: 52px; }
+
+      .menu-toggle { display: block; }
 
       .nav-links {
-        display: none; position: absolute; top: 76px; left: 0; right: 0;
-        padding: 22px 5%; background: #0b0b0b;
+        display: none;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        padding: 20px 5%;
+        background: #0b0b0b;
         border-bottom: 1px solid var(--line);
-        flex-direction: column; align-items: flex-start;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 17px;
       }
 
-      .nav-links.open { display: flex; }
-
-      .about-grid, .contact-grid { grid-template-columns: 1fr; }
-
-      .cards { grid-template-columns: repeat(2, 1fr); }
+      .nav-links.active { display: flex; }
 
       .hero { min-height: 570px; }
+      .hero-content { padding: 80px 0; }
+
+      .about-grid,
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .services-grid,
+      .portfolio-grid,
+      .why-grid,
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .client-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .section { padding: 70px 0; }
+
+      .footer-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
 
-    @media (max-width: 540px) {
-      section { padding: 65px 0; }
-
-      .cards { grid-template-columns: 1fr; }
-
-      .hero p { font-size: 15px; }
-
-      .about-art { min-height: 230px; }
+    @media (max-width: 380px) {
+      .client-grid { grid-template-columns: 1fr 1fr; }
+      .client-card { min-height: 125px; padding: 12px; }
+      .client-card img { height: 75px; }
     }
   </style>
 </head>
 
 <body>
+
+  <!-- HEADER -->
   <header>
-    <div class="container nav">
-      <a class="logo" href="#home">
-        <img src="logo-gold.jpg" alt="Royal Digital Logo" style="height:48px; width:auto; display:block;">
+    <div class="container navbar">
+      <a class="header-logo" href="#home">
+        <img src="logo-gold.jpg" alt="Royal Digital">
       </a>
 
-      <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
 
       <nav class="nav-links" id="navLinks">
-        <a href="#home">Home</a><a href="#about">About</a>
-        <a href="#services">Services</a><a href="#portfolio">Portfolio</a>
-        <a href="#packages">Packages</a><a href="#contact">Contact</a>
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#clients">Our Clients</a>
+        <a href="#pricing">Packages</a>
+        <a href="#contact">Contact</a>
       </nav>
     </div>
   </header>
 
-  <main>
-    <section class="hero" id="home">
-      <div class="container hero-content">
-        <div class="eyebrow">Creative Studio · Vijayapura</div>
-        <h1>We Create.<br><span>You Shine.</span></h1>
-        <p>Creative ideas. Powerful visuals. Digital growth.
-          We help brands tell their story through content, design and digital experiences.</p>
-        <div class="actions">
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-tag">Creative & Digital Agency · Vijayapura</div>
+        <h1>We Create.<br><span class="gold">You Shine.</span></h1>
+        <p>
+          We help businesses build their identity, create powerful visual content
+          and grow their digital presence with creativity and consistency.
+        </p>
+        <div class="hero-buttons">
           <a class="btn" href="#portfolio">Explore Our Work</a>
-          <a class="btn btn-outline" href="#contact">Let's Work Together</a>
+          <a class="btn-outline" href="#contact">Work With Us</a>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="about">
-      <div class="container about-grid">
-        <div>
-          <div class="eyebrow">Who We Are</div>
-          <h2>Creativity with a <span class="gold">Royal Touch.</span></h2>
-          <p>Royal Digital is a creative and digital studio focused on helping businesses build a strong visual identity and a consistent online presence. From the first idea to the final edit, we turn stories into content that connects with people.</p>
-          <div class="stats">
-            <div><strong>Creative</strong><span>Thinking</span></div>
-            <div><strong>Digital</strong><span>Strategy</span></div>
-            <div><strong>Quality</strong><span>First</span></div>
-          </div>
+  <!-- ABOUT -->
+  <section class="section" id="about">
+    <div class="container about-grid">
+      <div class="about-logo">
+        <img src="royal-full-logo.png" alt="Royal Digital Full Logo">
+      </div>
+
+      <div class="about-copy">
+        <div class="eyebrow">Who We Are</div>
+        <h2>Creative Ideas.<br><span class="gold">Digital Impact.</span></h2>
+        <p>
+          Royal Digital is a creative and digital agency based in Vijayapura,
+          Karnataka. We work with businesses and brands to create meaningful
+          visual content and strengthen their online presence.
+        </p>
+        <p>
+          From professional video production and photography to graphic design
+          and social media management, we bring ideas to life through creative
+          storytelling.
+        </p>
+        <a class="btn-outline" href="#contact">Let's Connect</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section" id="services">
+    <div class="container">
+      <div class="section-intro">
+        <div class="eyebrow">What We Do</div>
+        <h2>Our <span class="gold">Services</span></h2>
+        <p>Creative solutions designed to help your brand stand out and grow.</p>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-number">01 / VIDEO</div>
+          <h3>Video Production</h3>
+          <p>Reels, promotional videos, advertisements, commercial shoots and brand films.</p>
         </div>
 
-        <!-- About Us Logo -->
-        <div class="about-art">
-          <img src="royal-full-logo.png" alt="Royal Digital Full Logo">
+        <div class="service-card">
+          <div class="service-number">02 / DESIGN</div>
+          <h3>Graphic Designing</h3>
+          <p>Social media creatives, posters, banners, promotional designs and digital artwork.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-number">03 / SOCIAL</div>
+          <h3>Social Media Management</h3>
+          <p>Content planning, page management, posting schedules and consistent brand communication.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-number">04 / PHOTO</div>
+          <h3>Photography</h3>
+          <p>Food, product, model, business, event and professional brand photography.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-number">05 / BRAND</div>
+          <h3>Branding & Identity</h3>
+          <p>Logo design, brand identity, visual direction and consistent brand presentation.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-number">06 / PROMOTION</div>
+          <h3>Digital Promotions</h3>
+          <p>Creative promotional campaigns and digital content to increase brand visibility.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="services">
-      <div class="container">
-        <div class="section-intro">
-          <div class="eyebrow">What We Do</div>
-          <h2>Our <span class="gold">Services</span></h2>
-          <p>Everything your brand needs to look professional, stay consistent and stand out.</p>
+  <!-- PORTFOLIO -->
+  <section class="section" id="portfolio">
+    <div class="container">
+      <div class="section-intro">
+        <div class="eyebrow">Selected Work</div>
+        <h2>Our <span class="gold">Portfolio</span></h2>
+        <p>A selection of creative projects and brand collaborations.</p>
+      </div>
+
+      <div class="portfolio-grid">
+        <div class="portfolio-card">
+          <small>Food & Restaurant</small>
+          <h3>Zaitoon Grills</h3>
         </div>
 
-        <div class="cards">
-          <article class="card"><span class="number">01 / VIDEO</span><h3>Video Production</h3><p>Reels, promotional videos, advertisements and commercial shoots.</p></article>
-          <article class="card"><span class="number">02 / DESIGN</span><h3>Graphic Designing</h3><p>Social media creatives, posters, campaign designs and visual content.</p></article>
-          <article class="card"><span class="number">03 / SOCIAL</span><h3>Social Media Management</h3><p>Content planning, page support and consistent brand communication.</p></article>
-          <article class="card"><span class="number">04 / PHOTO</span><h3>Photography</h3><p>Food, product, model and event photography.</p></article>
-          <article class="card"><span class="number">05 / BRAND</span><h3>Branding & Identity</h3><p>Brand visuals and creative identity that make your business memorable.</p></article>
-          <article class="card"><span class="number">06 / PROMOTION</span><h3>Digital Promotions</h3><p>Creative promotional content to help your business reach more people.</p></article>
+        <div class="portfolio-card">
+          <small>Food & Restaurant</small>
+          <h3>Anna Idli Express</h3>
+        </div>
+
+        <div class="portfolio-card">
+          <small>Hospitality</small>
+          <h3>Hotel Shubhashree</h3>
+        </div>
+
+        <div class="portfolio-card">
+          <small>Healthcare</small>
+          <h3>Mujawar Dental & Face Hospital</h3>
+        </div>
+
+        <div class="portfolio-card">
+          <small>Beauty & Lifestyle</small>
+          <h3>Oviya</h3>
+        </div>
+
+        <div class="portfolio-card">
+          <small>Photography & Events</small>
+          <h3>Model Shoots & Events</h3>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="portfolio">
-      <div class="container">
-        <div class="section-intro">
-          <div class="eyebrow">Selected Projects</div>
-          <h2>Our <span class="gold">Portfolio</span></h2>
-          <p>A selection of brands and creative projects we've worked on. Project visuals will be added here.</p>
+  <!-- OUR CLIENTS -->
+  <section class="section" id="clients">
+    <div class="container">
+      <div class="section-intro">
+        <div class="eyebrow">Brands We Work With</div>
+        <h2>Our <span class="gold">Clients</span></h2>
+        <p>
+          Building creative connections and helping brands grow through
+          powerful digital experiences.
+        </p>
+      </div>
+
+      <div class="client-grid">
+        <div class="client-card">
+          <img src="zaitoon-grills.png" alt="Zaitoon Grills">
         </div>
 
-        <div class="cards">
-          <article class="portfolio-card"><small>RESTAURANTS & FOOD</small><h3>Zaitoon Grills</h3><p>Food reels & promotional content</p></article>
-          <article class="portfolio-card"><small>RESTAURANTS & FOOD</small><h3>Anna Idli Express</h3><p>Food creatives & digital content</p></article>
-          <article class="portfolio-card"><small>HOSPITALITY</small><h3>Hotel Shubhashree</h3><p>Brand content & social media creatives</p></article>
-          <article class="portfolio-card"><small>HEALTHCARE</small><h3>Mujawar Dental & Face Hospital</h3><p>Healthcare awareness & promotional videos</p></article>
-          <article class="portfolio-card"><small>BEAUTY & LIFESTYLE</small><h3>Oviya</h3><p>Creative brand content</p></article>
-          <article class="portfolio-card"><small>PHOTOGRAPHY</small><h3>Model Shoots & Events</h3><p>Photography and visual storytelling</p></article>
+        <div class="client-card">
+          <img src="anna-idli.png" alt="Anna Idli">
+        </div>
+
+        <div class="client-card">
+          <img src="anna-idli-express.png" alt="Anna Idli Express">
+        </div>
+
+        <div class="client-card">
+          <img src="hotel-shubhashree.png" alt="Hotel Shubhashree">
+        </div>
+
+        <div class="client-card">
+          <img src="oviya.png" alt="Oviya">
+        </div>
+
+        <div class="client-card">
+          <img src="cake-walk.png" alt="Cake Walk">
+        </div>
+
+        <div class="client-card">
+          <img src="hotel-vishram.png" alt="Hotel Vishram">
+        </div>
+
+        <div class="client-card">
+          <img src="mujawar-dental.png" alt="Mujawar Dental and Face Hospital">
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="why">
-      <div class="container">
-        <div class="section-intro">
-          <div class="eyebrow">The Royal Difference</div>
-          <h2>Why Choose <span class="gold">Us?</span></h2>
+  <!-- WHY CHOOSE US -->
+  <section class="section" id="why">
+    <div class="container">
+      <div class="section-intro">
+        <div class="eyebrow">The Royal Difference</div>
+        <h2>Why Choose <span class="gold">Us?</span></h2>
+        <p>We focus on quality, creativity and building long-term relationships with brands.</p>
+      </div>
+
+      <div class="why-grid">
+        <div class="why-card">
+          <h3>Creative Thinking</h3>
+          <p>Fresh ideas and original concepts that help your brand stand out.</p>
         </div>
 
-        <div class="cards">
-          <article class="card"><h3>Creative Approach</h3><p>Ideas shaped around your brand, audience and goals.</p></article>
-          <article class="card"><h3>Quality Focus</h3><p>Careful attention to visuals, details and presentation.</p></article>
-          <article class="card"><h3>Consistent Support</h3><p>Reliable creative support to keep your brand active.</p></article>
+        <div class="why-card">
+          <h3>Quality Content</h3>
+          <p>Professional visuals and thoughtful storytelling for your business.</p>
+        </div>
+
+        <div class="why-card">
+          <h3>Consistent Support</h3>
+          <p>Reliable communication and ongoing creative support for your brand.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="packages">
-      <div class="container">
-        <div class="section-intro">
-          <div class="eyebrow">Work With Us</div>
-          <h2>Packages & <span class="gold">Pricing</span></h2>
-          <p>Choose a plan that fits your goals. Final pricing and deliverables are customised after understanding your requirements.</p>
+  <!-- PRICING -->
+  <section class="section" id="pricing">
+    <div class="container">
+      <div class="section-intro">
+        <div class="eyebrow">Work With Us</div>
+        <h2>Our <span class="gold">Packages</span></h2>
+        <p>Flexible creative solutions based on your business goals and requirements.</p>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="price-card">
+          <h3>Starter</h3>
+          <div class="price-label">Custom Quote</div>
+          <p>For businesses starting their digital journey.</p>
+          <a class="btn-outline" href="#contact">Get Details</a>
         </div>
 
-        <div class="cards">
-          <article class="card price-card"><span class="tag">01 / STARTER</span><h3>Starter</h3><p>For businesses building their online presence.</p><ul><li>Creative content support</li><li>Social media creatives</li><li>Basic content planning</li></ul><a class="btn btn-outline" href="#contact">Get a Quote</a></article>
-          <article class="card price-card featured"><span class="tag">02 / GROWTH</span><h3>Growth</h3><p>For brands ready to grow consistently.</p><ul><li>Reels & creative posts</li><li>Content planning</li><li>Social media support</li></ul><a class="btn" href="#contact">Get a Quote</a></article>
-          <article class="card price-card"><span class="tag">03 / PREMIUM</span><h3>Premium</h3><p>For businesses seeking complete creative support.</p><ul><li>Video & photo production</li><li>Brand creatives</li><li>Ongoing digital support</li></ul><a class="btn btn-outline" href="#contact">Get a Quote</a></article>
+        <div class="price-card featured">
+          <h3>Growth</h3>
+          <div class="price-label">Custom Quote</div>
+          <p>For brands looking for regular content and stronger online presence.</p>
+          <a class="btn" href="#contact">Get Details</a>
+        </div>
+
+        <div class="price-card">
+          <h3>Premium</h3>
+          <div class="price-label">Custom Quote</div>
+          <p>For businesses looking for complete creative and digital support.</p>
+          <a class="btn-outline" href="#contact">Get Details</a>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section>
-      <div class="container">
-        <div class="section-intro">
-          <div class="eyebrow">Simple & Clear</div>
-          <h2>Our Working <span class="gold">Process</span></h2>
+  <!-- PROCESS -->
+  <section class="section" id="process">
+    <div class="container">
+      <div class="section-intro">
+        <div class="eyebrow">How We Work</div>
+        <h2>Our Working <span class="gold">Process</span></h2>
+        <p>A simple and clear process to bring your ideas to life.</p>
+      </div>
+
+      <div class="process-grid">
+        <div class="process-card">
+          <span>STEP 01</span>
+          <h3>Understand</h3>
+          <p>We understand your business, goals and creative requirements.</p>
         </div>
 
-        <div class="steps">
-          <div class="step"><div><h3>Understand</h3><p>We learn about your business, audience and goals.</p></div></div>
-          <div class="step"><div><h3>Plan</h3><p>We develop a creative direction and content plan.</p></div></div>
-          <div class="step"><div><h3>Create</h3><p>We shoot, design and produce your content.</p></div></div>
-          <div class="step"><div><h3>Deliver</h3><p>We share the final work and support your next steps.</p></div></div>
+        <div class="process-card">
+          <span>STEP 02</span>
+          <h3>Plan</h3>
+          <p>We develop a creative direction and content plan.</p>
+        </div>
+
+        <div class="process-card">
+          <span>STEP 03</span>
+          <h3>Create</h3>
+          <p>Our team produces the agreed designs, photos and videos.</p>
+        </div>
+
+        <div class="process-card">
+          <span>STEP 04</span>
+          <h3>Deliver</h3>
+          <p>We share the final approved work with you.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="cta">
-      <div class="container">
-        <div class="eyebrow">Have a Project in Mind?</div>
-        <h2>Let's Create Something <span class="gold">Remarkable.</span></h2>
-        <p>Tell us about your business and let's build content that makes your brand stand out.</p>
-        <a class="btn" href="https://www.instagram.com/royal_digital_26/" target="_blank" rel="noopener">DM Us on Instagram</a>
-      </div>
-    </section>
-
-    <section id="contact">
-      <div class="container contact-grid">
-        <div>
-          <div class="eyebrow">Get In Touch</div>
-          <h2>Let's Talk About <span class="gold">Your Brand.</span></h2>
-          <p>For projects, collaborations and custom packages, contact Royal Digital.</p>
-        </div>
-
-        <div class="contact-details">
-          <p><strong class="gold">Instagram</strong><br><a class="social" href="https://www.instagram.com/royal_digital_26/" target="_blank" rel="noopener">@Royal_digital_26</a></p>
-          <p><strong class="gold">Location</strong><br>Vijayapura, Karnataka, India</p>
-          <p><strong class="gold">Email / Phone</strong><br>Contact us through Instagram DM</p>
-          <a class="btn" href="https://www.instagram.com/royal_digital_26/" target="_blank" rel="noopener">Send an Enquiry</a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container footer-row">
-      <!-- Footer Logo -->
-      <a class="footer-logo" href="#home">
-        <img src="royal-horizontal.png" alt="Royal Digital">
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container">
+      <div class="eyebrow">Let's Create Something Great</div>
+      <h2>Ready to Grow Your <span class="gold">Brand?</span></h2>
+      <p>
+        Have a project in mind? Let's discuss your ideas and create something
+        that makes your brand stand out.
+      </p>
+      <a class="btn" href="https://wa.me/917019006750" target="_blank" rel="noopener">
+        Start a Conversation
       </a>
+    </div>
+  </section>
 
-      <p>Creative. Digital. Royal. © <span id="year"></span> Royal Digital. All rights reserved.</p>
+  <!-- CONTACT -->
+  <section class="section" id="contact">
+    <div class="container">
+      <div class="section-intro">
+        <div class="eyebrow">Get In Touch</div>
+        <h2>Let's Talk <span class="gold">Business.</span></h2>
+        <p>Contact us for projects, collaborations and creative enquiries.</p>
+      </div>
 
-      <a class="social" href="https://www.instagram.com/royal_digital_26/" target="_blank" rel="noopener">Instagram ↗</a>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="contact-item">
+            <strong>Agency</strong>
+            <p>Royal Digital | By Royal Productions</p>
+          </div>
+
+          <div class="contact-item">
+            <strong>Phone / WhatsApp</strong>
+            <p><a href="tel:+917019006750">+91 70190 06750</a></p>
+            <p><a href="tel:+919606406188">+91 96064 06188</a></p>
+          </div>
+
+          <div class="contact-item">
+            <strong>Email</strong>
+            <p>
+              <a href="mailto:royalproductions26@gmail.com">
+                royalproductions26@gmail.com
+              </a>
+            </p>
+          </div>
+
+          <div class="contact-item">
+            <strong>Instagram</strong>
+            <p>
+              <a href="https://www.instagram.com/royal_digital_26/" target="_blank" rel="noopener">
+                @royal_digital_26
+              </a>
+            </p>
+          </div>
+
+          <div class="contact-item">
+            <strong>Location</strong>
+            <p>Vijayapura, Karnataka, India</p>
+          </div>
+
+          <a class="btn" href="https://wa.me/917019006750" target="_blank" rel="noopener">
+            WhatsApp Us
+          </a>
+        </div>
+
+        <div class="contact-logo">
+          <img src="royal-horizontal.png" alt="Royal Digital Creative and Digital">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <a class="footer-logo" href="#home">
+          <img src="royal-horizontal.png" alt="Royal Digital">
+        </a>
+
+        <div class="footer-links">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#services">Services</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#clients">Clients</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© <span id="year"></span> Royal Digital. All Rights Reserved.</p>
+        <p>Creative & Digital by <span>Royal Digital</span></p>
+      </div>
     </div>
   </footer>
 
+  <!-- WHATSAPP FLOATING BUTTON -->
+  <a class="whatsapp-float"
+     href="https://wa.me/917019006750"
+     target="_blank"
+     rel="noopener"
+     aria-label="Chat with Royal Digital on WhatsApp">
+    WhatsApp
+  </a>
+
   <script>
-    const menuBtn = document.getElementById("menuBtn");
-    const navLinks = document.getElementById("navLinks");
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
 
-    menuBtn.addEventListener("click", () => navLinks.classList.toggle("open"));
-
-    navLinks.querySelectorAll("a").forEach(link => {
-      link.addEventListener("click", () => navLinks.classList.remove("open"));
+    menuToggle.addEventListener('click', function () {
+      navLinks.classList.toggle('active');
     });
 
-    document.getElementById("year").textContent = new Date().getFullYear();
+    document.querySelectorAll('.nav-links a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        navLinks.classList.remove('active');
+      });
+    });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
+
 </body>
 </html>
