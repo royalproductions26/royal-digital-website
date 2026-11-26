@@ -846,27 +846,8 @@
         <p>Flexible creative solutions based on your business goals and requirements.</p>
       </div>
 
-      <div class="pricing-grid">
-        <div class="price-card">
-          <h3>Starter</h3>
-          <div class="price-label">Custom Quote</div>
-          <p>For businesses starting their digital journey.</p>
-          <a class="btn-outline" href="#contact">Get Details</a>
-        </div>
-
-        <div class="price-card featured">
-          <h3>Growth</h3>
-          <div class="price-label">Custom Quote</div>
-          <p>For brands looking for regular content and stronger online presence.</p>
-          <a class="btn" href="#contact">Get Details</a>
-        </div>
-
-        <div class="price-card">
-          <h3>Premium</h3>
-          <div class="price-label">Custom Quote</div>
-          <p>For businesses looking for complete creative and digital support.</p>
-          <a class="btn-outline" href="#contact">Get Details</a>
-        </div>
+      <div class="pricing-grid" id="pricingGrid">
+        <p class="muted">Loading our packages...</p>
       </div>
     </div>
   </section>
@@ -1034,8 +1015,6 @@
 
     // SUPABASE CONNECTION
     const SUPABASE_URL = 'https://kwczmrtgzuijunwkvkej.supabase.co';
-
-    // Replace this placeholder with your existing sb_publishable key
     const SUPABASE_KEY = 'sb_publishable_-O2kws00bL8L1nXiCVOlag_zhVa9mac';
 
     const supabaseClient = window.supabase.createClient(
@@ -1127,7 +1106,109 @@
       }
     }
 
+    // LOAD VISIBLE CLIENTS FROM SUPABASE
+    // Existing logo cards are retained; duplicate names are skipped.
+    async function loadClients() {
+      const grid = document.getElementById('clientGrid');
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('clients')
+          .select('id, name, logo_url, display_order, is_visible')
+          .eq('is_visible', true)
+          .order('display_order', { ascending: true });
+
+        if (error) throw error;
+        if (!data || data.length === 0) return;
+
+        const existingNames = Array.from(
+          grid.querySelectorAll('.client-card img')
+        ).map(function (img) {
+          return (img.alt || '').trim().toLowerCase();
+        });
+
+        data.forEach(function (client) {
+          const name = (client.name || '').trim();
+          const logoURL = safeMediaURL(client.logo_url);
+
+          if (!name || !logoURL) return;
+          if (existingNames.includes(name.toLowerCase())) return;
+
+          const card = document.createElement('div');
+          card.className = 'client-card';
+
+          const img = document.createElement('img');
+          img.src = logoURL;
+          img.alt = name;
+          img.loading = 'lazy';
+
+          card.appendChild(img);
+          grid.appendChild(card);
+          existingNames.push(name.toLowerCase());
+        });
+
+      } catch (error) {
+        console.error('Clients loading error:', error);
+      }
+    }
+
+    // LOAD ACTIVE PACKAGES FROM SUPABASE
+    async function loadPackages() {
+      const grid = document.getElementById('pricingGrid');
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('packages')
+          .select('id, name, starting_price, description, features, is_active, display_order')
+          .eq('is_active', true)
+          .order('display_order', { ascending: true });
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          grid.innerHTML =
+            '<p class="muted">Our packages will be updated soon. Contact us for a custom quote.</p>';
+          return;
+        }
+
+        grid.innerHTML = data.map(function (pkg, index) {
+          const price = Number(pkg.starting_price);
+          const priceHTML = Number.isFinite(price) && price > 0
+            ? `Starting ₹${price.toLocaleString('en-IN')}`
+            : 'Custom Quote';
+
+          const features = Array.isArray(pkg.features) ? pkg.features : [];
+
+          const featuresHTML = features.length
+            ? `<ul style="color:#aaa; font-size:14px; padding-left:20px; margin-bottom:22px;">
+                ${features.map(function (feature) {
+                  return `<li style="margin-bottom:8px;">${escapeHTML(feature)}</li>`;
+                }).join('')}
+              </ul>`
+            : '';
+
+          return `
+            <article class="price-card ${index === 1 ? 'featured' : ''}">
+              <h3>${escapeHTML(pkg.name || 'Creative Package')}</h3>
+              <div class="price-label">${priceHTML}</div>
+              ${pkg.description ? `<p>${escapeHTML(pkg.description)}</p>` : ''}
+              ${featuresHTML}
+              <a class="${index === 1 ? 'btn' : 'btn-outline'}" href="#contact">Get Details</a>
+            </article>
+          `;
+        }).join('');
+
+      } catch (error) {
+        console.error('Packages loading error:', error);
+        grid.innerHTML =
+          '<p class="muted">Packages are temporarily unavailable. Please contact us for details.</p>';
+      }
+    }
+
+    // LOAD WEBSITE DATA
     loadPortfolio();
+    loadClients();
+    loadPackages();
   </script>
 
 </body>
