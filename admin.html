@@ -4,52 +4,129 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
 <title>Royal Digital | Admin Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--gold:#d4af37;--bg:#080808;--panel:#151515;--line:#292929;--muted:#aaa}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#fff;font-family:Arial,sans-serif}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer;border:0;border-radius:7px;padding:12px 16px;background:var(--gold);color:#080808;font-weight:bold}
-input,textarea,select{width:100%;padding:13px;margin:7px 0 14px;background:#090909;color:#fff;border:1px solid #444;border-radius:7px}
-textarea{min-height:85px}
-label{font-size:13px;color:#ccc}
-.login{max-width:420px;margin:12vh auto;padding:28px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
-h1,h2{color:var(--gold)}
-.logo{text-align:center;font-size:25px;font-weight:bold;letter-spacing:2px}
-.muted{color:var(--muted);font-size:13px}
-#app{display:none}
-header{padding:18px 5%;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
-header strong{color:var(--gold);font-size:20px}
-main{max-width:1100px;margin:auto;padding:24px 16px}
-.tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 0}
-.tabs button{white-space:nowrap;background:#222;color:#fff}
-.tabs button.active{background:var(--gold);color:#000}
-.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:14px}
-.item{border-bottom:1px solid var(--line);padding:14px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}
-.item:last-child{border:0}
-.item small{display:block;color:var(--muted);margin-top:5px}
-.actions{display:flex;gap:6px;flex-wrap:wrap}
-.actions button{padding:8px 10px;font-size:12px}
-.secondary{background:#333;color:#fff}
-.danger{background:#a83232;color:#fff}
-#message{color:var(--gold);margin:12px 0}
-.hidden{display:none}
-@media(max-width:600px){header{align-items:flex-start}header strong{font-size:16px}.item{align-items:flex-start;flex-direction:column}.login{margin:8vh 15px}}
+:root {
+  --gold:#d4af37;
+  --bg:#080808;
+  --panel:#151515;
+  --line:#292929;
+  --muted:#aaa;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;background:var(--bg);color:#fff;
+  font-family:Arial,sans-serif;
+}
+button,input,textarea,select {font:inherit}
+button {
+  cursor:pointer;border:0;border-radius:7px;
+  padding:12px 16px;background:var(--gold);
+  color:#080808;font-weight:bold;
+}
+input,textarea,select {
+  width:100%;padding:13px;margin:7px 0 14px;
+  background:#090909;color:#fff;
+  border:1px solid #444;border-radius:7px;
+}
+textarea {min-height:85px}
+label {font-size:13px;color:#ccc}
+.login {
+  max-width:420px;margin:12vh auto;padding:28px;
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;
+}
+h1,h2 {color:var(--gold)}
+.logo {
+  text-align:center;font-size:25px;
+  font-weight:bold;letter-spacing:2px;
+}
+.muted {color:var(--muted);font-size:13px}
+#app {display:none}
+header {
+  padding:18px 5%;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;
+  align-items:center;gap:12px;
+}
+header strong {color:var(--gold);font-size:20px}
+main {max-width:1100px;margin:auto;padding:24px 16px}
+.tabs {
+  display:flex;gap:8px;overflow-x:auto;padding:12px 0;
+}
+.tabs button {white-space:nowrap;background:#222;color:#fff}
+.tabs button.active {background:var(--gold);color:#000}
+.toolbar {
+  display:flex;justify-content:space-between;
+  align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0;
+}
+.panel {
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:18px;margin-bottom:14px;
+}
+.item {
+  border-bottom:1px solid var(--line);
+  padding:16px 0;display:flex;
+  justify-content:space-between;gap:14px;align-items:center;
+}
+.item:last-child {border:0}
+.item-info {
+  display:flex;align-items:center;gap:14px;
+  min-width:0;
+}
+.item small {
+  display:block;color:var(--muted);margin-top:5px;
+  overflow-wrap:anywhere;
+}
+.actions {display:flex;gap:6px;flex-wrap:wrap}
+.actions button {padding:8px 10px;font-size:12px}
+.secondary {background:#333;color:#fff}
+.danger {background:#a83232;color:#fff}
+#message {color:var(--gold);margin:12px 0}
+.hidden {display:none!important}
+.thumb {
+  width:76px;height:76px;flex-shrink:0;
+  object-fit:contain;background:#080808;
+  border:1px solid var(--line);border-radius:8px;padding:5px;
+}
+.video-thumb {
+  width:76px;height:76px;flex-shrink:0;
+  background:#080808;border:1px solid var(--line);
+  border-radius:8px;display:flex;
+  justify-content:center;align-items:center;
+  color:var(--gold);font-size:25px;
+}
+.status {
+  display:inline-block;font-size:11px;
+  padding:4px 8px;border-radius:20px;
+  background:#242424;color:var(--gold);margin-top:6px;
+}
+.empty {color:var(--muted);padding:18px 0}
+@media(max-width:600px) {
+  header {align-items:flex-start}
+  header strong {font-size:16px}
+  .item {align-items:flex-start;flex-direction:column}
+  .item-info {width:100%}
+  .login {margin:8vh 15px}
+}
 </style>
 </head>
+
 <body>
 
 <section class="login" id="loginBox">
   <div class="logo">ROYAL <span style="color:#d4af37">DIGITAL</span></div>
   <h2>Admin Login</h2>
   <p class="muted">Sign in to manage your website.</p>
+
   <label>Email Address</label>
   <input id="email" type="email" placeholder="Your admin email">
+
   <label>Password</label>
   <input id="password" type="password" placeholder="Your password">
+
   <button style="width:100%" onclick="login()">Sign In</button>
   <p id="loginMessage" class="muted"></p>
 </section>
@@ -59,19 +136,23 @@ main{max-width:1100px;margin:auto;padding:24px 16px}
   <strong>ROYAL DIGITAL ADMIN</strong>
   <button class="secondary" onclick="logout()">Logout</button>
 </header>
+
 <main>
   <h1>Dashboard</h1>
   <p class="muted">Manage your website content from here.</p>
+
   <div class="tabs" id="tabs">
     <button class="active" data-table="projects">Projects</button>
     <button data-table="clients">Clients</button>
     <button data-table="testimonials">Testimonials</button>
     <button data-table="packages">Packages</button>
   </div>
+
   <div class="toolbar">
     <h2 id="sectionTitle">Projects</h2>
     <button onclick="addItem()">+ Add New</button>
   </div>
+
   <div id="message"></div>
   <div class="panel" id="records">Loading...</div>
   <p class="muted">Royal Digital — Private Admin Area</p>
@@ -79,7 +160,7 @@ main{max-width:1100px;margin:auto;padding:24px 16px}
 </div>
 
 <input type="file" id="filePicker" class="hidden"
-       accept="image/*,video/mp4,video/webm">
+accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm">
 
 <script>
 const SUPABASE_URL = "https://kwczmrtgzuijunwkvkej.supabase.co";
@@ -95,75 +176,103 @@ let currentUpload = null;
 
 const configs = {
   projects: {
-    title: "Projects",
-    fields: [
+    title:"Projects",
+    fields:[
       ["title","Project title"],
       ["category","Category"],
       ["description","Description"],
       ["cover_image_url","Cover image URL"],
       ["video_url","Video URL"]
     ],
-    flags: ["is_featured","is_published"]
+    flags:["is_featured","is_published"]
   },
   clients: {
-    title: "Clients",
-    fields: [
+    title:"Clients",
+    fields:[
       ["name","Client name"],
       ["logo_url","Logo image URL"],
       ["display_order","Display order"]
     ],
-    flags: ["is_visible"]
+    flags:["is_visible"]
   },
   testimonials: {
-    title: "Testimonials",
-    fields: [
+    title:"Testimonials",
+    fields:[
       ["client_name","Client name"],
       ["content","Testimonial"],
       ["rating","Rating (1 to 5)"]
     ],
-    flags: ["is_published"]
+    flags:["is_published"]
   },
   packages: {
-    title: "Packages",
-    fields: [
+    title:"Packages",
+    fields:[
       ["name","Package name"],
       ["starting_price","Starting price"],
       ["description","Description"],
       ["features","Features (separate with commas)"],
       ["display_order","Display order"]
     ],
-    flags: ["is_active"]
+    flags:["is_active"]
   }
 };
 
-function say(message){
+function say(message) {
   document.getElementById("message").textContent = message;
 }
 
-async function login(){
+function safe(value) {
+  return String(value ?? "").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+async function login() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
   const output = document.getElementById("loginMessage");
+
   output.textContent = "Signing in...";
 
   const {error} = await db.auth.signInWithPassword({email,password});
-  if(error){output.textContent = error.message;return;}
+
+  if(error) {
+    output.textContent = error.message;
+    return;
+  }
+
   await showApp();
 }
 
-async function logout(){
+async function logout() {
   await db.auth.signOut();
   document.getElementById("app").style.display = "none";
   document.getElementById("loginBox").style.display = "block";
 }
 
-async function showApp(){
+async function showApp() {
   document.getElementById("loginBox").style.display = "none";
   document.getElementById("app").style.display = "block";
   await loadRecords();
 }
 
-async function loadRecords(){
+function getPreview(row) {
+  if(currentTable === "clients" && row.logo_url) {
+    return `<img class="thumb" src="${safe(row.logo_url)}" alt="Client logo" loading="lazy" onerror="this.style.display='none'">`;
+  }
+
+  if(currentTable === "projects" && row.cover_image_url) {
+    return `<img class="thumb" src="${safe(row.cover_image_url)}" alt="Project image" loading="lazy" onerror="this.style.display='none'">`;
+  }
+
+  if(currentTable === "projects" && row.video_url) {
+    return `<div class="video-thumb">▶</div>`;
+  }
+
+  return `<div class="video-thumb">RD</div>`;
+}
+
+async function loadRecords() {
   const config = configs[currentTable];
   document.getElementById("sectionTitle").textContent = config.title;
   document.getElementById("records").textContent = "Loading...";
@@ -173,117 +282,164 @@ async function loadRecords(){
     .select("*")
     .order("created_at",{ascending:false});
 
-  if(error){
+  if(error) {
     document.getElementById("records").textContent = error.message;
     return;
   }
 
-  if(!data.length){
-    document.getElementById("records").textContent = "No records yet. Tap Add New to create one.";
+  if(!data.length) {
+    document.getElementById("records").innerHTML =
+      '<div class="empty">No records yet. Tap Add New to create one.</div>';
     return;
   }
 
   document.getElementById("records").innerHTML = data.map(row => {
     const name = row.title || row.name || row.client_name || "Record";
     const detail = row.category || row.starting_price || row.content || "";
+    const preview = getPreview(row);
+
+    const status = row.is_published !== undefined
+      ? (row.is_published ? "Published" : "Draft")
+      : row.is_visible !== undefined
+      ? (row.is_visible ? "Visible" : "Hidden")
+      : row.is_active !== undefined
+      ? (row.is_active ? "Active" : "Inactive")
+      : "";
+
+    const uploadButton = ["projects","clients"].includes(currentTable)
+      ? `<button class="secondary" onclick="uploadMedia(${row.id})">Upload</button>`
+      : "";
+
     return `
       <div class="item">
-        <div>
-          <strong>${safe(name)}</strong>
-          <small>${safe(detail)}</small>
-          <small>ID: ${row.id}</small>
+        <div class="item-info">
+          ${preview}
+          <div>
+            <strong>${safe(name)}</strong>
+            <small>${safe(detail)}</small>
+            <small>ID: ${row.id}</small>
+            ${status ? `<span class="status">${safe(status)}</span>` : ""}
+          </div>
         </div>
         <div class="actions">
           <button class="secondary" onclick="editItem(${row.id})">Edit</button>
-          <button class="secondary" onclick="uploadMedia(${row.id})">Upload</button>
+          ${uploadButton}
           <button class="danger" onclick="deleteItem(${row.id})">Delete</button>
         </div>
       </div>`;
   }).join("");
 }
 
-function safe(value){
-  return String(value ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[c]));
-}
-
-async function addItem(){
+async function addItem() {
   const config = configs[currentTable];
   const record = {};
 
-  for(const [key,label] of config.fields){
+  for(const [key,label] of config.fields) {
     let value = prompt(label);
     if(value === null) return;
-    if(key === "features"){
+
+    if(key === "features") {
       record[key] = value.split(",").map(x=>x.trim()).filter(Boolean);
-    }else if(["display_order","rating"].includes(key)){
+    } else if(["display_order","rating"].includes(key)) {
       record[key] = Number(value || 0);
-    }else{
+    } else {
       record[key] = value;
     }
   }
 
-  config.flags.forEach(flag => record[flag] = confirm(
-    "Enable " + flag.replaceAll("_"," ") + "?"
-  ));
+  config.flags.forEach(flag => {
+    record[flag] = confirm(
+      "Enable " + flag.replaceAll("_"," ") + "?"
+    );
+  });
 
   const {error} = await db.from(currentTable).insert(record);
-  if(error){say(error.message);return;}
+
+  if(error) {
+    say(error.message);
+    return;
+  }
+
   say("Record added successfully.");
   await loadRecords();
 }
 
-async function editItem(id){
+async function editItem(id) {
   const {data,error} = await db.from(currentTable)
     .select("*").eq("id",id).single();
 
-  if(error){say(error.message);return;}
+  if(error) {
+    say(error.message);
+    return;
+  }
 
   const config = configs[currentTable];
   const changes = {};
 
-  for(const [key,label] of config.fields){
+  for(const [key,label] of config.fields) {
     const oldValue = Array.isArray(data[key])
       ? data[key].join(", ")
       : (data[key] ?? "");
+
     const value = prompt(label,oldValue);
     if(value === null) return;
 
-    if(key === "features"){
+    if(key === "features") {
       changes[key] = value.split(",").map(x=>x.trim()).filter(Boolean);
-    }else if(["display_order","rating"].includes(key)){
+    } else if(["display_order","rating"].includes(key)) {
       changes[key] = Number(value || 0);
-    }else{
+    } else {
       changes[key] = value;
     }
   }
 
-  for(const flag of config.flags){
+  for(const flag of config.flags) {
     changes[flag] = confirm(
       flag.replaceAll("_"," ") + " is currently " +
       (data[flag] ? "ON" : "OFF") + ". OK = ON, Cancel = OFF"
     );
   }
 
-  const result = await db.from(currentTable).update(changes).eq("id",id);
-  if(result.error){say(result.error.message);return;}
+  const result = await db.from(currentTable)
+    .update(changes).eq("id",id);
+
+  if(result.error) {
+    say(result.error.message);
+    return;
+  }
+
   say("Record updated.");
   await loadRecords();
 }
 
-async function deleteItem(id){
+async function deleteItem(id) {
   if(!confirm("Are you sure you want to delete this record?")) return;
+
   const {error} = await db.from(currentTable).delete().eq("id",id);
-  if(error){say(error.message);return;}
+
+  if(error) {
+    say(error.message);
+    return;
+  }
+
   say("Record deleted.");
   await loadRecords();
 }
 
-function uploadMedia(id){
+function uploadMedia(id) {
+  if(!["projects","clients"].includes(currentTable)) {
+    say("Upload is only available for Projects and Clients.");
+    return;
+  }
+
   currentUpload = {id,table:currentTable};
+
   const picker = document.getElementById("filePicker");
   picker.value = "";
+  picker.accept = currentTable === "clients"
+    ? "image/jpeg,image/png,image/webp,image/gif"
+    : "image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm";
+
   picker.click();
 }
 
@@ -292,7 +448,23 @@ document.getElementById("filePicker").addEventListener("change",async e=>{
   if(!file || !currentUpload) return;
 
   const {id,table} = currentUpload;
-  const path = table + "/" + Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+
+  const allowedImage = ["image/jpeg","image/png","image/webp","image/gif"];
+  const allowedVideo = ["video/mp4","video/webm"];
+
+  if(!allowedImage.includes(file.type) &&
+     !(table === "projects" && allowedVideo.includes(file.type))) {
+    say("This file type is not allowed.");
+    return;
+  }
+
+  if(file.size > 50 * 1024 * 1024) {
+    say("File size must be 50 MB or less.");
+    return;
+  }
+
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+  const path = table + "/" + Date.now() + "-" + safeName;
 
   say("Uploading file...");
 
@@ -300,30 +472,46 @@ document.getElementById("filePicker").addEventListener("change",async e=>{
     .from("royal-portfolio")
     .upload(path,file,{upsert:false});
 
-  if(uploadError){say(uploadError.message);return;}
-
-  const {data} = db.storage.from("royal-portfolio").getPublicUrl(path);
-  const column = file.type.startsWith("video/") ? "video_url" :
-    (table === "clients" ? "logo_url" : "cover_image_url");
-
-  if(!["projects","clients"].includes(table)){
-    say("Upload is supported for Projects and Clients.");
+  if(uploadError) {
+    say(uploadError.message);
     return;
+  }
+
+  const {data} = db.storage
+    .from("royal-portfolio")
+    .getPublicUrl(path);
+
+  let column;
+
+  if(table === "clients") {
+    column = "logo_url";
+  } else {
+    column = file.type.startsWith("video/")
+      ? "video_url"
+      : "cover_image_url";
   }
 
   const {error:updateError} = await db.from(table)
     .update({[column]:data.publicUrl}).eq("id",id);
 
-  if(updateError){say(updateError.message);return;}
-  say("File uploaded and record updated.");
+  if(updateError) {
+    say("File uploaded, but record update failed: " + updateError.message);
+    return;
+  }
+
+  say("File uploaded successfully.");
   await loadRecords();
 });
 
 document.getElementById("tabs").addEventListener("click",e=>{
   const button = e.target.closest("button[data-table]");
   if(!button) return;
+
   currentTable = button.dataset.table;
-  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+
+  document.querySelectorAll(".tabs button")
+    .forEach(b=>b.classList.remove("active"));
+
   button.classList.add("active");
   say("");
   loadRecords();
@@ -334,7 +522,7 @@ db.auth.getSession().then(({data})=>{
 });
 
 db.auth.onAuthStateChange((event,session)=>{
-  if(event === "SIGNED_OUT"){
+  if(event === "SIGNED_OUT") {
     document.getElementById("app").style.display = "none";
     document.getElementById("loginBox").style.display = "block";
   }
@@ -342,4 +530,3 @@ db.auth.onAuthStateChange((event,session)=>{
 </script>
 </body>
 </html>
-
