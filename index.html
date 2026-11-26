@@ -582,6 +582,28 @@
       box-shadow: 0 5px 20px rgba(0,0,0,.4);
     }
 
+
+    /* ROYAL DIGITAL SPOTLIGHT & CLIENT PORTFOLIOS */
+    .spotlight-grid,.client-content-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .spotlight-card,.client-work-card{background:#151515;border:1px solid var(--line);padding:16px;border-radius:10px;overflow:hidden}
+    .spotlight-card iframe,.client-work-card iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:7px;background:#000}
+    .spotlight-card h3,.client-work-card h3{font-size:17px;margin:12px 0 7px}
+    .spotlight-card p,.client-work-card p{color:var(--muted);font-size:13px;line-height:1.6}
+    .client-card-button{width:100%;font:inherit;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:inherit;background:#141414;border:1px solid var(--line);border-radius:9px;padding:18px;transition:.25s}
+    .client-card-button:hover{border-color:var(--gold);transform:translateY(-4px)}
+    .client-card-button img{max-width:100%;object-fit:contain}
+    .client-view-label{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
+    .client-portfolio-section{border-top:1px solid var(--line);background:#0b0b0b}
+    .client-portfolio-section[hidden]{display:none}
+    .back-clients{margin-bottom:28px;padding:10px 16px;cursor:pointer}
+    .portfolio-tabs{display:flex;gap:10px;margin:0 0 22px}
+    .portfolio-tab{background:#222;color:#fff;border:1px solid #333;padding:11px 22px;border-radius:30px;cursor:pointer}
+    .portfolio-tab.active{background:var(--gold);color:#080808;border-color:var(--gold)}
+    .client-work-card img{width:100%;height:auto;max-height:420px;object-fit:contain;border-radius:6px;background:#090909}
+    .client-work-card .work-kind{font-size:10px;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+    @media(max-width:900px){.spotlight-grid,.client-content-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:700px){.spotlight-grid,.client-content-grid{grid-template-columns:1fr}.client-card-button{min-height:155px}}
+
     /* RESPONSIVE */
 
     @media (max-width: 900px) {
@@ -661,7 +683,7 @@
         <a href="#home">Home</a>
         <a href="#about">About</a>
         <a href="#services">Services</a>
-        <a href="#portfolio">Portfolio</a>
+        <a href="#portfolio">Spotlight</a>
         <a href="#clients">Our Clients</a>
         <a href="#pricing">Packages</a>
         <a href="#contact">Contact</a>
@@ -761,18 +783,15 @@
     </div>
   </section>
 
-  <!-- PORTFOLIO - SUPABASE DYNAMIC -->
+  <!-- ROYAL DIGITAL SPOTLIGHT -->
   <section class="section" id="portfolio">
     <div class="container">
       <div class="section-intro">
-        <div class="eyebrow">Selected Work</div>
-        <h2>Our <span class="gold">Portfolio</span></h2>
-        <p>A selection of creative projects and brand collaborations.</p>
+        <div class="eyebrow">Inside Royal Digital</div>
+        <h2>Royal Digital <span class="gold">Spotlight</span></h2>
+        <p>Our latest updates, announcements and a look behind the creativity.</p>
       </div>
-
-      <div class="portfolio-grid" id="portfolioGrid">
-        <p class="muted">Loading our latest projects...</p>
-      </div>
+      <div class="spotlight-grid" id="spotlightGrid"><p class="muted">Loading Royal Digital updates...</p></div>
     </div>
   </section>
 
@@ -792,6 +811,23 @@
     <div class="client-grid" id="clientGrid">
       <p class="muted">Loading our clients...</p>
     </div>
+  </div>
+</section>
+
+<!-- INDIVIDUAL CLIENT PORTFOLIO -->
+<section class="section client-portfolio-section" id="clientPortfolio" hidden>
+  <div class="container">
+    <button class="btn-outline back-clients" id="backToClients" type="button">← Back to All Clients</button>
+    <div class="section-intro client-profile-heading">
+      <div class="eyebrow">Selected Client Work</div>
+      <h2 id="clientPortfolioTitle">Client <span class="gold">Portfolio</span></h2>
+      <p>Videos and creative posts produced for this brand.</p>
+    </div>
+    <div class="portfolio-tabs" role="tablist" aria-label="Client portfolio categories">
+      <button class="portfolio-tab active" type="button" data-content="video">Videos</button>
+      <button class="portfolio-tab" type="button" data-content="post">Posts</button>
+    </div>
+    <div class="client-content-grid" id="clientContentGrid"><p class="muted">Loading client work...</p></div>
   </div>
 </section>
 
@@ -959,7 +995,7 @@
           <a href="#home">Home</a>
           <a href="#about">About</a>
           <a href="#services">Services</a>
-          <a href="#portfolio">Portfolio</a>
+          <a href="#portfolio">Spotlight</a>
           <a href="#clients">Clients</a>
           <a href="#contact">Contact</a>
         </div>
@@ -1038,58 +1074,33 @@
       return '';
     }
 
-    // LOAD PUBLISHED PROJECTS FROM SUPABASE
-    async function loadPortfolio() {
-      const grid = document.getElementById('portfolioGrid');
-
+    // YOUTUBE EMBED HELPER
+    function youtubeEmbed(url) {
+      if (!url) return '';
       try {
-        const { data, error } = await supabaseClient
-          .from('projects')
-          .select('id, title, category, description, cover_image_url, video_url, is_featured, is_published, created_at')
-          .eq('is_published', true)
-          .order('created_at', { ascending: false });
+        const u = new URL(url);
+        let id = '';
+        if (u.hostname.includes('youtu.be')) id = u.pathname.split('/').filter(Boolean)[0] || '';
+        else if (u.hostname.includes('youtube.com')) id = u.searchParams.get('v') || u.pathname.split('/').filter(Boolean).pop() || '';
+        if (!/^[a-zA-Z0-9_-]{6,}$/.test(id)) return '';
+        return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id);
+      } catch (e) { return ''; }
+    }
 
+    // ROYAL DIGITAL SPOTLIGHT
+    async function loadSpotlight() {
+      const grid = document.getElementById('spotlightGrid');
+      try {
+        const { data, error } = await supabaseClient.from('spotlight_items')
+          .select('id,title,content_type,description,youtube_url,is_published,created_at')
+          .eq('is_published', true).order('created_at', { ascending: false });
         if (error) throw error;
-
-        if (!data || data.length === 0) {
-          grid.innerHTML =
-            '<p class="muted">Our latest projects will be showcased here soon.</p>';
-          return;
-        }
-
-        grid.innerHTML = data.map(function (project) {
-          const imageURL = safeMediaURL(project.cover_image_url);
-          const videoURL = safeMediaURL(project.video_url);
-
-          const imageHTML = imageURL
-            ? `<img src="${imageURL}" alt="${escapeHTML(project.title || 'Project')}" loading="lazy">`
-            : '';
-
-          const videoHTML = videoURL
-            ? `<video controls preload="metadata">
-                 <source src="${videoURL}">
-                 Your browser does not support video playback.
-               </video>`
-            : '';
-
-          return `
-            <article class="portfolio-card">
-              ${imageHTML}
-              ${videoHTML}
-              <small>${escapeHTML(project.category || 'Creative Project')}</small>
-              <h3>${escapeHTML(project.title || 'Untitled Project')}</h3>
-              ${project.description
-                ? `<p>${escapeHTML(project.description)}</p>`
-                : ''}
-            </article>
-          `;
+        if (!data || !data.length) { grid.innerHTML = '<p class="muted">Royal Digital updates and featured videos will appear here soon.</p>'; return; }
+        grid.innerHTML = data.map(item => {
+          const embed = item.content_type === 'video' ? youtubeEmbed(item.youtube_url) : '';
+          return `<article class="spotlight-card">${embed ? `<iframe src="${embed}" title="${escapeHTML(item.title || 'Royal Digital video')}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` : ''}<small class="gold">${escapeHTML(item.content_type === 'video' ? 'Royal Digital Video' : 'Announcement')}</small><h3>${escapeHTML(item.title || 'Royal Digital Update')}</h3>${item.description ? `<p>${escapeHTML(item.description)}</p>` : ''}</article>`;
         }).join('');
-
-      } catch (error) {
-        console.error('Portfolio loading error:', error);
-        grid.innerHTML =
-          '<p class="muted">Portfolio is temporarily unavailable. Please visit again soon.</p>';
-      }
+      } catch (error) { console.error('Spotlight loading error:', error); grid.innerHTML = '<p class="muted">Royal Digital Spotlight is temporarily unavailable.</p>'; }
     }
 
     // LOAD VISIBLE CLIENTS FROM SUPABASE
@@ -1121,9 +1132,10 @@
           const logoURL = safeMediaURL(client.logo_url);
 
           return `
-            <div class="client-card">
+            <button class="client-card client-card-button" type="button" data-client-id="${escapeHTML(client.id)}" data-client-name="${name}" aria-label="View ${name} portfolio">
               <img src="${logoURL}" alt="${name}" loading="lazy">
-            </div>
+              <span class="client-view-label">View Portfolio <span aria-hidden="true">→</span></span>
+            </button>
           `;
         }).join('');
 
@@ -1133,6 +1145,40 @@
           '<p class="muted">Our clients are temporarily unavailable. Please visit again soon.</p>';
       }
     }
+
+    // CLIENT-WISE PORTFOLIO
+    let activeClientId = null;
+    let activeClientContent = 'video';
+    async function openClientPortfolio(clientId, clientName) {
+      activeClientId = clientId;
+      activeClientContent = 'video';
+      document.getElementById('clients').hidden = true;
+      document.getElementById('clientPortfolio').hidden = false;
+      document.getElementById('clientPortfolioTitle').innerHTML = `${escapeHTML(clientName)} <span class="gold">Portfolio</span>`;
+      document.querySelectorAll('.portfolio-tab').forEach(b => b.classList.toggle('active', b.dataset.content === 'video'));
+      await loadClientContent();
+      document.getElementById('clientPortfolio').scrollIntoView({behavior:'smooth',block:'start'});
+    }
+    async function loadClientContent() {
+      const grid = document.getElementById('clientContentGrid');
+      grid.innerHTML = '<p class="muted">Loading...</p>';
+      try {
+        const {data,error} = await supabaseClient.from('client_portfolio_items')
+          .select('id,client_id,content_type,title,description,youtube_url,image_url,is_published,display_order,created_at')
+          .eq('client_id',activeClientId).eq('is_published',true)
+          .eq('content_type',activeClientContent).order('display_order',{ascending:true}).order('created_at',{ascending:false});
+        if(error) throw error;
+        if(!data || !data.length){grid.innerHTML=`<p class="muted">No ${activeClientContent === 'video' ? 'videos' : 'posts'} added for this client yet.</p>`;return;}
+        grid.innerHTML = data.map(item => {
+          const media = activeClientContent === 'video' ? youtubeEmbed(item.youtube_url) : safeMediaURL(item.image_url);
+          if(!media) return '';
+          return `<article class="client-work-card">${activeClientContent === 'video' ? `<iframe src="${media}" title="${escapeHTML(item.title || 'Client video')}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` : `<img src="${media}" alt="${escapeHTML(item.title || 'Client creative')}" loading="lazy">`}<div class="work-kind">${activeClientContent === 'video' ? 'Video' : 'Creative Post'}</div>${item.title ? `<h3>${escapeHTML(item.title)}</h3>` : ''}${item.description ? `<p>${escapeHTML(item.description)}</p>` : ''}</article>`;
+        }).join('') || `<p class="muted">No ${activeClientContent === 'video' ? 'videos' : 'posts'} available.</p>`;
+      } catch(error){console.error('Client portfolio error:',error);grid.innerHTML='<p class="muted">Client portfolio is temporarily unavailable.</p>';}
+    }
+    document.getElementById('clientGrid').addEventListener('click',function(e){const card=e.target.closest('[data-client-id]');if(card)openClientPortfolio(card.dataset.clientId,card.dataset.clientName);});
+    document.getElementById('backToClients').addEventListener('click',function(){document.getElementById('clientPortfolio').hidden=true;document.getElementById('clients').hidden=false;document.getElementById('clients').scrollIntoView({behavior:'smooth',block:'start'});});
+    document.querySelectorAll('.portfolio-tab').forEach(button=>button.addEventListener('click',function(){activeClientContent=this.dataset.content;document.querySelectorAll('.portfolio-tab').forEach(b=>b.classList.toggle('active',b===this));loadClientContent();}));
 
     // LOAD ACTIVE PACKAGES FROM SUPABASE
     async function loadPackages() {
@@ -1205,7 +1251,7 @@
     }
 
     // LOAD WEBSITE DATA
-    loadPortfolio();
+    loadSpotlight();
     loadClients();
     loadPackages();
   </script>
