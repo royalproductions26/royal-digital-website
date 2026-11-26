@@ -2,531 +2,1259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080808">
-<title>Royal Digital | Admin Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080808">
+  <title>Royal Digital | Creative & Digital Agency</title>
+  <meta name="description" content="Royal Digital - Video production, photography, graphic designing, branding and social media management in Vijayapura, Karnataka.">
+  <link rel="icon" type="image/png" href="royal-icon.png">
 
-<style>
-:root {
-  --gold:#d4af37;
-  --bg:#080808;
-  --panel:#151515;
-  --line:#292929;
-  --muted:#aaa;
-}
-* {box-sizing:border-box}
-body {
-  margin:0;background:var(--bg);color:#fff;
-  font-family:Arial,sans-serif;
-}
-button,input,textarea,select {font:inherit}
-button {
-  cursor:pointer;border:0;border-radius:7px;
-  padding:12px 16px;background:var(--gold);
-  color:#080808;font-weight:bold;
-}
-input,textarea,select {
-  width:100%;padding:13px;margin:7px 0 14px;
-  background:#090909;color:#fff;
-  border:1px solid #444;border-radius:7px;
-}
-textarea {min-height:85px}
-label {font-size:13px;color:#ccc}
-.login {
-  max-width:420px;margin:12vh auto;padding:28px;
-  background:var(--panel);border:1px solid var(--line);
-  border-radius:12px;
-}
-h1,h2 {color:var(--gold)}
-.logo {
-  text-align:center;font-size:25px;
-  font-weight:bold;letter-spacing:2px;
-}
-.muted {color:var(--muted);font-size:13px}
-#app {display:none}
-header {
-  padding:18px 5%;border-bottom:1px solid var(--line);
-  display:flex;justify-content:space-between;
-  align-items:center;gap:12px;
-}
-header strong {color:var(--gold);font-size:20px}
-main {max-width:1100px;margin:auto;padding:24px 16px}
-.tabs {
-  display:flex;gap:8px;overflow-x:auto;padding:12px 0;
-}
-.tabs button {white-space:nowrap;background:#222;color:#fff}
-.tabs button.active {background:var(--gold);color:#000}
-.toolbar {
-  display:flex;justify-content:space-between;
-  align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0;
-}
-.panel {
-  background:var(--panel);border:1px solid var(--line);
-  border-radius:10px;padding:18px;margin-bottom:14px;
-}
-.item {
-  border-bottom:1px solid var(--line);
-  padding:16px 0;display:flex;
-  justify-content:space-between;gap:14px;align-items:center;
-}
-.item:last-child {border:0}
-.item-info {
-  display:flex;align-items:center;gap:14px;
-  min-width:0;
-}
-.item small {
-  display:block;color:var(--muted);margin-top:5px;
-  overflow-wrap:anywhere;
-}
-.actions {display:flex;gap:6px;flex-wrap:wrap}
-.actions button {padding:8px 10px;font-size:12px}
-.secondary {background:#333;color:#fff}
-.danger {background:#a83232;color:#fff}
-#message {color:var(--gold);margin:12px 0}
-.hidden {display:none!important}
-.thumb {
-  width:76px;height:76px;flex-shrink:0;
-  object-fit:contain;background:#080808;
-  border:1px solid var(--line);border-radius:8px;padding:5px;
-}
-.video-thumb {
-  width:76px;height:76px;flex-shrink:0;
-  background:#080808;border:1px solid var(--line);
-  border-radius:8px;display:flex;
-  justify-content:center;align-items:center;
-  color:var(--gold);font-size:25px;
-}
-.status {
-  display:inline-block;font-size:11px;
-  padding:4px 8px;border-radius:20px;
-  background:#242424;color:var(--gold);margin-top:6px;
-}
-.empty {color:var(--muted);padding:18px 0}
-@media(max-width:600px) {
-  header {align-items:flex-start}
-  header strong {font-size:16px}
-  .item {align-items:flex-start;flex-direction:column}
-  .item-info {width:100%}
-  .login {margin:8vh 15px}
-}
-</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --bg: #080808;
+      --surface: #111111;
+      --gold: #d6ad60;
+      --gold-light: #f0d28e;
+      --white: #ffffff;
+      --muted: #aaaaaa;
+      --line: rgba(214,173,96,.22);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.7;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; }
+
+    .container {
+      width: min(1120px, 90%);
+      margin: auto;
+    }
+
+    .gold { color: var(--gold); }
+
+    .section { padding: 95px 0; }
+
+    .section-intro {
+      max-width: 680px;
+      margin-bottom: 45px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    h1, h2, h3 { line-height: 1.2; }
+    h1, h2 { font-family: 'Playfair Display', serif; }
+
+    h2 {
+      font-size: clamp(32px, 5vw, 48px);
+      margin-bottom: 17px;
+    }
+
+    .section-intro p,
+    .muted { color: var(--muted); }
+
+    .btn {
+      display: inline-block;
+      padding: 13px 25px;
+      background: var(--gold);
+      color: #080808;
+      border-radius: 3px;
+      font-weight: 800;
+      transition: .25s;
+    }
+
+    .btn:hover {
+      background: var(--gold-light);
+      transform: translateY(-3px);
+    }
+
+    .btn-outline {
+      display: inline-block;
+      padding: 12px 24px;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      border-radius: 3px;
+      font-weight: 700;
+      transition: .25s;
+    }
+
+    .btn-outline:hover {
+      background: var(--gold);
+      color: #080808;
+    }
+
+    /* HEADER */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(8,8,8,.96);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+    }
+
+    .navbar {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .header-logo img {
+      width: 165px;
+      height: 58px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 23px;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: #dddddd;
+      transition: .2s;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 7px 12px;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    /* HERO */
+
+    .hero {
+      min-height: 650px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 80% 35%, rgba(214,173,96,.14), transparent 40%),
+        linear-gradient(120deg, #080808, #12100b 65%, #080808);
+    }
+
+    .hero-content {
+      max-width: 780px;
+      padding: 100px 0;
+    }
+
+    .hero-tag {
+      color: var(--gold);
+      letter-spacing: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      font-size: clamp(48px, 8vw, 82px);
+      margin-bottom: 22px;
+    }
+
+    .hero p {
+      color: #bbbbbb;
+      max-width: 590px;
+      font-size: 17px;
+      margin-bottom: 32px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    /* ABOUT */
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 55px;
+      align-items: center;
+    }
+
+    .about-logo {
+      min-height: 340px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 35px;
+    }
+
+    .about-logo img {
+      width: 100%;
+      max-width: 390px;
+      object-fit: contain;
+    }
+
+    .about-copy p {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    /* SERVICES */
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 28px;
+      transition: .25s;
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--gold);
+    }
+
+    .service-number {
+      color: var(--gold);
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 22px;
+    }
+
+    .service-card h3 {
+      font-size: 19px;
+      margin-bottom: 12px;
+    }
+
+    .service-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* PORTFOLIO */
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .portfolio-card {
+      min-height: 220px;
+      background: linear-gradient(145deg, #191919, #292216);
+      border: 1px solid var(--line);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      transition: .25s;
+      overflow: hidden;
+    }
+
+    .portfolio-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-5px);
+    }
+
+    .portfolio-card img {
+      width: calc(100% + 40px);
+      max-width: none;
+      height: 190px;
+      object-fit: cover;
+      margin: -20px -20px 16px;
+    }
+
+    .portfolio-card video {
+      width: calc(100% + 40px);
+      max-width: none;
+      max-height: 220px;
+      background: #000;
+      margin: -20px -20px 16px;
+    }
+
+    .portfolio-card small {
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .portfolio-card h3 { font-size: 21px; }
+
+    .portfolio-card p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    /* CLIENTS */
+
+    .client-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .client-card {
+      min-height: 155px;
+      padding: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #111111;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      transition: .25s;
+    }
+
+    .client-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--gold);
+    }
+
+    .client-card img {
+      width: 100%;
+      max-width: 190px;
+      height: 100px;
+      object-fit: contain;
+      display: block;
+      /* Neutral light logo plate keeps dark/transparent logos readable */
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 9px;
+    }
+
+    /* WHY CHOOSE US */
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .why-card {
+      padding: 25px;
+      background: var(--surface);
+      border-left: 2px solid var(--gold);
+    }
+
+    .why-card h3 {
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .why-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* PRICING */
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .price-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 32px 25px;
+    }
+
+    .price-card.featured {
+      border-color: var(--gold);
+      background: linear-gradient(145deg, #17140e, #111111);
+    }
+
+    .price-card h3 {
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    .price-label {
+      color: var(--gold);
+      font-size: 25px;
+      font-weight: 800;
+      margin: 15px 0;
+    }
+
+    .price-card p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .package-features {
+      color: var(--muted);
+      font-size: 14px;
+      padding-left: 20px;
+      margin-bottom: 22px;
+    }
+
+    .package-features li {
+      margin-bottom: 8px;
+      line-height: 1.55;
+    }
+
+    /* PROCESS */
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .process-card {
+      padding: 22px;
+      border-top: 1px solid var(--gold);
+      background: var(--surface);
+    }
+
+    .process-card span {
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .process-card h3 {
+      margin: 12px 0 8px;
+      font-size: 18px;
+    }
+
+    .process-card p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* CTA */
+
+    .cta {
+      text-align: center;
+      padding: 85px 20px;
+      background: linear-gradient(120deg, #1a160e, #0d0d0d);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .cta p {
+      color: var(--muted);
+      margin: 15px auto 28px;
+      max-width: 600px;
+    }
+
+    /* CONTACT */
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 35px;
+    }
+
+    .contact-info {
+      background: var(--surface);
+      padding: 30px;
+      border: 1px solid var(--line);
+    }
+
+    .contact-item { margin: 20px 0; }
+
+    .contact-item strong {
+      color: var(--gold);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .contact-item p,
+    .contact-item a {
+      color: #cccccc;
+      overflow-wrap: anywhere;
+    }
+
+    .contact-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 30px;
+    }
+
+    .contact-logo img {
+      max-width: 340px;
+      width: 100%;
+      object-fit: contain;
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 40px 0 22px;
+      background: #050505;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 25px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .footer-logo img {
+      width: 190px;
+      height: 75px;
+      object-fit: contain;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer-bottom {
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: #888888;
+      font-size: 12px;
+    }
+
+    .footer-bottom span { color: var(--gold); }
+
+    /* WHATSAPP */
+
+    .whatsapp-float {
+      position: fixed;
+      bottom: 22px;
+      right: 20px;
+      z-index: 999;
+      background: #25D366;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 50px;
+      font-weight: 800;
+      box-shadow: 0 5px 20px rgba(0,0,0,.4);
+    }
+
+
+    /* ROYAL DIGITAL SPOTLIGHT & CLIENT PORTFOLIOS */
+    .spotlight-grid,.client-content-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .spotlight-card,.client-work-card{background:#151515;border:1px solid var(--line);padding:16px;border-radius:10px;overflow:hidden}
+    .spotlight-card iframe,.client-work-card iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:7px;background:#000}
+    .spotlight-card h3,.client-work-card h3{font-size:17px;margin:12px 0 7px}
+    .spotlight-card p,.client-work-card p{color:var(--muted);font-size:13px;line-height:1.6}
+    .client-card-button{width:100%;font:inherit;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:inherit;background:#141414;border:1px solid var(--line);border-radius:9px;padding:18px;transition:.25s}
+    .client-card-button:hover{border-color:var(--gold);transform:translateY(-4px)}
+    .client-card-button img{max-width:100%;object-fit:contain}
+    .client-view-label{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
+    .client-portfolio-section{border-top:1px solid var(--line);background:#0b0b0b}
+    .client-portfolio-section[hidden]{display:none}
+    .back-clients{margin-bottom:28px;padding:10px 16px;cursor:pointer}
+    .portfolio-tabs{display:flex;gap:10px;margin:0 0 22px}
+    .portfolio-tab{background:#222;color:#fff;border:1px solid #333;padding:11px 22px;border-radius:30px;cursor:pointer}
+    .portfolio-tab.active{background:var(--gold);color:#080808;border-color:var(--gold)}
+    .client-work-card img{width:100%;height:auto;max-height:420px;object-fit:contain;border-radius:6px;background:#090909}
+    .client-work-card .work-kind{font-size:10px;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+    @media(max-width:900px){.spotlight-grid,.client-content-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:700px){.spotlight-grid,.client-content-grid{grid-template-columns:1fr}.client-card-button{min-height:155px}}
+
+    /* RESPONSIVE */
+
+    @media (max-width: 900px) {
+      .nav-links { gap: 13px; }
+      .nav-links a { font-size: 12px; }
+      .client-grid { grid-template-columns: repeat(3, 1fr); }
+      .process-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 700px) {
+      .navbar { min-height: 70px; }
+      .header-logo img { width: 140px; height: 52px; }
+
+      .menu-toggle { display: block; }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        padding: 20px 5%;
+        background: #0b0b0b;
+        border-bottom: 1px solid var(--line);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 17px;
+      }
+
+      .nav-links.active { display: flex; }
+
+      .hero { min-height: 570px; }
+      .hero-content { padding: 80px 0; }
+
+      .about-grid,
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .services-grid,
+      .portfolio-grid,
+      .why-grid,
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .client-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .section { padding: 70px 0; }
+
+      .footer-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .client-grid { grid-template-columns: 1fr 1fr; }
+      .client-card { min-height: 125px; padding: 12px; }
+      .client-card img { height: 75px; padding: 7px; }
+    }
+  </style>
 </head>
 
 <body>
 
-<section class="login" id="loginBox">
-  <div class="logo">ROYAL <span style="color:#d4af37">DIGITAL</span></div>
-  <h2>Admin Login</h2>
-  <p class="muted">Sign in to manage your website.</p>
+  <!-- HEADER -->
+  <header>
+    <div class="container navbar">
+      <a class="header-logo" href="#home">
+        <img src="logo-gold.jpg" alt="Royal Digital">
+      </a>
 
-  <label>Email Address</label>
-  <input id="email" type="email" placeholder="Your admin email">
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
 
-  <label>Password</label>
-  <input id="password" type="password" placeholder="Your password">
+      <nav class="nav-links" id="navLinks">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#portfolio">Spotlight</a>
+        <a href="#clients">Our Clients</a>
+        <a href="#pricing">Packages</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
 
-  <button style="width:100%" onclick="login()">Sign In</button>
-  <p id="loginMessage" class="muted"></p>
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-tag">Creative & Digital Agency · Vijayapura</div>
+        <h1>We Create.<br><span class="gold">You Shine.</span></h1>
+        <p>
+          We help businesses build their identity, create powerful visual content
+          and grow their digital presence with creativity and consistency.
+        </p>
+        <div class="hero-buttons">
+          <a class="btn" href="#portfolio">Explore Our Work</a>
+          <a class="btn-outline" href="#contact">Work With Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section" id="about">
+    <div class="container about-grid">
+      <div class="about-logo">
+        <img src="royal-full-logo.png" alt="Royal Digital Full Logo">
+      </div>
+
+      <div class="about-copy">
+        <div class="eyebrow">Who We Are</div>
+        <h2>Creative Ideas.<br><span class="gold">Digital Impact.</span></h2>
+        <p>
+          Royal Digital is a creative and digital agency based in Vijayapura,
+          Karnataka. We work with businesses and brands to create meaningful
+          visual content and strengthen their online presence.
+        </p>
+        <p>
+          From professional video production and photography to graphic design
+          and social media management, we bring ideas to life through creative
+          storytelling.
+        </p>
+        <a class="btn-outline" href="#contact">Let's Connect</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section" id="services">
+    <div class="container">
+      <div class="section-intro">
+        <div class="eyebrow">What We Do</div>
+        <h2>Our <span class="gold">Services</span></h2>
+        <p>Creative solutions designed to help your brand stand out and grow.</p>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-number">01 / VIDEO</div>
+          <h3>Video Production</h3>
+          <p>Reels, promotional videos, advertisements, commercial shoots and brand films.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-number">02 / DESIGN</div>
+          <h3>Graphic Designing</h3>
+          <p>Social media creatives, posters, banners, promotional designs and digital artwork.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-number">03 / SOCIAL</div>
+          <h3>Social Media Management</h3>
+          <p>Content planning, page management, posting schedules and consistent brand communication.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-number">04 / PHOTO</div>
+          <h3>Photography</h3>
+          <p>Food, product, model, business, event and professional brand photography.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-number">05 / BRAND</div>
+          <h3>Branding & Identity</h3>
+          <p>Logo design, brand identity, visual direction and consistent brand presentation.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-number">06 / PROMOTION</div>
+          <h3>Digital Promotions</h3>
+          <p>Creative promotional campaigns and digital content to increase brand visibility.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROYAL DIGITAL SPOTLIGHT -->
+  <section class="section" id="portfolio">
+    <div class="container">
+      <div class="section-intro">
+        <div class="eyebrow">Inside Royal Digital</div>
+        <h2>Royal Digital <span class="gold">Spotlight</span></h2>
+        <p>Our latest updates, announcements and a look behind the creativity.</p>
+      </div>
+      <div class="spotlight-grid" id="spotlightGrid"><p class="muted">Loading Royal Digital updates...</p></div>
+    </div>
+  </section>
+
+  
+<!-- OUR CLIENTS -->
+<section class="section" id="clients">
+  <div class="container">
+    <div class="section-intro">
+      <div class="eyebrow">Brands We Work With</div>
+      <h2>Our <span class="gold">Clients</span></h2>
+      <p>
+        Building creative connections and helping brands grow through
+        powerful digital experiences.
+      </p>
+    </div>
+
+    <div class="client-grid" id="clientGrid">
+      <p class="muted">Loading our clients...</p>
+    </div>
+  </div>
 </section>
 
-<div id="app">
-<header>
-  <strong>ROYAL DIGITAL ADMIN</strong>
-  <button class="secondary" onclick="logout()">Logout</button>
-</header>
-
-<main>
-  <h1>Dashboard</h1>
-  <p class="muted">Manage your website content from here.</p>
-
-  <div class="tabs" id="tabs">
-    <button class="active" data-table="projects">Projects</button>
-    <button data-table="clients">Clients</button>
-    <button data-table="testimonials">Testimonials</button>
-    <button data-table="packages">Packages</button>
+<!-- INDIVIDUAL CLIENT PORTFOLIO -->
+<section class="section client-portfolio-section" id="clientPortfolio" hidden>
+  <div class="container">
+    <button class="btn-outline back-clients" id="backToClients" type="button">← Back to All Clients</button>
+    <div class="section-intro client-profile-heading">
+      <div class="eyebrow">Selected Client Work</div>
+      <h2 id="clientPortfolioTitle">Client <span class="gold">Portfolio</span></h2>
+      <p>Videos and creative posts produced for this brand.</p>
+    </div>
+    <div class="portfolio-tabs" role="tablist" aria-label="Client portfolio categories">
+      <button class="portfolio-tab active" type="button" data-content="video">Videos</button>
+      <button class="portfolio-tab" type="button" data-content="post">Posts</button>
+    </div>
+    <div class="client-content-grid" id="clientContentGrid"><p class="muted">Loading client work...</p></div>
   </div>
+</section>
 
-  <div class="toolbar">
-    <h2 id="sectionTitle">Projects</h2>
-    <button onclick="addItem()">+ Add New</button>
-  </div>
+  <!-- WHY CHOOSE US -->
+  <section class="section" id="why">
+    <div class="container">
+      <div class="section-intro">
+        <div class="eyebrow">The Royal Difference</div>
+        <h2>Why Choose <span class="gold">Us?</span></h2>
+        <p>We focus on quality, creativity and building long-term relationships with brands.</p>
+      </div>
 
-  <div id="message"></div>
-  <div class="panel" id="records">Loading...</div>
-  <p class="muted">Royal Digital — Private Admin Area</p>
-</main>
-</div>
+      <div class="why-grid">
+        <div class="why-card">
+          <h3>Creative Thinking</h3>
+          <p>Fresh ideas and original concepts that help your brand stand out.</p>
+        </div>
 
-<input type="file" id="filePicker" class="hidden"
-accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm">
+        <div class="why-card">
+          <h3>Quality Content</h3>
+          <p>Professional visuals and thoughtful storytelling for your business.</p>
+        </div>
 
-<script>
-const SUPABASE_URL = "https://kwczmrtgzuijunwkvkej.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_-O2kws00bL8L1nXiCVOlag_zhVa9mac";
+        <div class="why-card">
+          <h3>Consistent Support</h3>
+          <p>Reliable communication and ongoing creative support for your brand.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
-);
+  <!-- PRICING -->
+  <section class="section" id="pricing">
+    <div class="container">
+      <div class="section-intro">
+        <div class="eyebrow">Work With Us</div>
+        <h2>Our <span class="gold">Packages</span></h2>
+        <p>Flexible creative solutions based on your business goals and requirements.</p>
+      </div>
 
-let currentTable = "projects";
-let currentUpload = null;
+      <div class="pricing-grid" id="pricingGrid">
+        <p class="muted">Loading our packages...</p>
+      </div>
+    </div>
+  </section>
 
-const configs = {
-  projects: {
-    title:"Projects",
-    fields:[
-      ["title","Project title"],
-      ["category","Category"],
-      ["description","Description"],
-      ["cover_image_url","Cover image URL"],
-      ["video_url","Video URL"]
-    ],
-    flags:["is_featured","is_published"]
-  },
-  clients: {
-    title:"Clients",
-    fields:[
-      ["name","Client name"],
-      ["logo_url","Logo image URL"],
-      ["display_order","Display order"]
-    ],
-    flags:["is_visible"]
-  },
-  testimonials: {
-    title:"Testimonials",
-    fields:[
-      ["client_name","Client name"],
-      ["content","Testimonial"],
-      ["rating","Rating (1 to 5)"]
-    ],
-    flags:["is_published"]
-  },
-  packages: {
-    title:"Packages",
-    fields:[
-      ["name","Package name"],
-      ["starting_price","Starting price"],
-      ["description","Description"],
-      ["features","Features (separate with commas)"],
-      ["display_order","Display order"]
-    ],
-    flags:["is_active"]
-  }
-};
+  <!-- PROCESS -->
+  <section class="section" id="process">
+    <div class="container">
+      <div class="section-intro">
+        <div class="eyebrow">How We Work</div>
+        <h2>Our Working <span class="gold">Process</span></h2>
+        <p>A simple and clear process to bring your ideas to life.</p>
+      </div>
 
-function say(message) {
-  document.getElementById("message").textContent = message;
-}
+      <div class="process-grid">
+        <div class="process-card">
+          <span>STEP 01</span>
+          <h3>Understand</h3>
+          <p>We understand your business, goals and creative requirements.</p>
+        </div>
 
-function safe(value) {
-  return String(value ?? "").replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[c]));
-}
+        <div class="process-card">
+          <span>STEP 02</span>
+          <h3>Plan</h3>
+          <p>We develop a creative direction and content plan.</p>
+        </div>
 
-async function login() {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  const output = document.getElementById("loginMessage");
+        <div class="process-card">
+          <span>STEP 03</span>
+          <h3>Create</h3>
+          <p>Our team produces the agreed designs, photos and videos.</p>
+        </div>
 
-  output.textContent = "Signing in...";
+        <div class="process-card">
+          <span>STEP 04</span>
+          <h3>Deliver</h3>
+          <p>We share the final approved work with you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  const {error} = await db.auth.signInWithPassword({email,password});
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container">
+      <div class="eyebrow">Let's Create Something Great</div>
+      <h2>Ready to Grow Your <span class="gold">Brand?</span></h2>
+      <p>
+        Have a project in mind? Let's discuss your ideas and create something
+        that makes your brand stand out.
+      </p>
+      <a class="btn" href="https://wa.me/917019006750" target="_blank" rel="noopener">
+        Start a Conversation
+      </a>
+    </div>
+  </section>
 
-  if(error) {
-    output.textContent = error.message;
-    return;
-  }
+  <!-- CONTACT -->
+  <section class="section" id="contact">
+    <div class="container">
+      <div class="section-intro">
+        <div class="eyebrow">Get In Touch</div>
+        <h2>Let's Talk <span class="gold">Business.</span></h2>
+        <p>Contact us for projects, collaborations and creative enquiries.</p>
+      </div>
 
-  await showApp();
-}
-
-async function logout() {
-  await db.auth.signOut();
-  document.getElementById("app").style.display = "none";
-  document.getElementById("loginBox").style.display = "block";
-}
-
-async function showApp() {
-  document.getElementById("loginBox").style.display = "none";
-  document.getElementById("app").style.display = "block";
-  await loadRecords();
-}
-
-function getPreview(row) {
-  if(currentTable === "clients" && row.logo_url) {
-    return `<img class="thumb" src="${safe(row.logo_url)}" alt="Client logo" loading="lazy" onerror="this.style.display='none'">`;
-  }
-
-  if(currentTable === "projects" && row.cover_image_url) {
-    return `<img class="thumb" src="${safe(row.cover_image_url)}" alt="Project image" loading="lazy" onerror="this.style.display='none'">`;
-  }
-
-  if(currentTable === "projects" && row.video_url) {
-    return `<div class="video-thumb">▶</div>`;
-  }
-
-  return `<div class="video-thumb">RD</div>`;
-}
-
-async function loadRecords() {
-  const config = configs[currentTable];
-  document.getElementById("sectionTitle").textContent = config.title;
-  document.getElementById("records").textContent = "Loading...";
-
-  const {data,error} = await db
-    .from(currentTable)
-    .select("*")
-    .order("created_at",{ascending:false});
-
-  if(error) {
-    document.getElementById("records").textContent = error.message;
-    return;
-  }
-
-  if(!data.length) {
-    document.getElementById("records").innerHTML =
-      '<div class="empty">No records yet. Tap Add New to create one.</div>';
-    return;
-  }
-
-  document.getElementById("records").innerHTML = data.map(row => {
-    const name = row.title || row.name || row.client_name || "Record";
-    const detail = row.category || row.starting_price || row.content || "";
-    const preview = getPreview(row);
-
-    const status = row.is_published !== undefined
-      ? (row.is_published ? "Published" : "Draft")
-      : row.is_visible !== undefined
-      ? (row.is_visible ? "Visible" : "Hidden")
-      : row.is_active !== undefined
-      ? (row.is_active ? "Active" : "Inactive")
-      : "";
-
-    const uploadButton = ["projects","clients"].includes(currentTable)
-      ? `<button class="secondary" onclick="uploadMedia(${row.id})">Upload</button>`
-      : "";
-
-    return `
-      <div class="item">
-        <div class="item-info">
-          ${preview}
-          <div>
-            <strong>${safe(name)}</strong>
-            <small>${safe(detail)}</small>
-            <small>ID: ${row.id}</small>
-            ${status ? `<span class="status">${safe(status)}</span>` : ""}
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="contact-item">
+            <strong>Agency</strong>
+            <p>Royal Digital | By Royal Productions</p>
           </div>
+
+          <div class="contact-item">
+            <strong>Phone / WhatsApp</strong>
+            <p><a href="tel:+917019006750">+91 70190 06750</a></p>
+            <p><a href="tel:+919606406188">+91 96064 06188</a></p>
+          </div>
+
+          <div class="contact-item">
+            <strong>Email</strong>
+            <p>
+              <a href="mailto:royalproductions26@gmail.com">
+                royalproductions26@gmail.com
+              </a>
+            </p>
+          </div>
+
+          <div class="contact-item">
+            <strong>Instagram</strong>
+            <p>
+              <a href="https://www.instagram.com/royal_digital_26/" target="_blank" rel="noopener">
+                @royal_digital_26
+              </a>
+            </p>
+          </div>
+
+          <div class="contact-item">
+            <strong>Location</strong>
+            <p>Vijayapura, Karnataka, India</p>
+          </div>
+
+          <a class="btn" href="https://wa.me/917019006750" target="_blank" rel="noopener">
+            WhatsApp Us
+          </a>
         </div>
-        <div class="actions">
-          <button class="secondary" onclick="editItem(${row.id})">Edit</button>
-          ${uploadButton}
-          <button class="danger" onclick="deleteItem(${row.id})">Delete</button>
+
+        <div class="contact-logo">
+          <img src="royal-horizontal.png" alt="Royal Digital Creative and Digital">
         </div>
-      </div>`;
-  }).join("");
-}
+      </div>
+    </div>
+  </section>
 
-async function addItem() {
-  const config = configs[currentTable];
-  const record = {};
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <a class="footer-logo" href="#home">
+          <img src="royal-horizontal.png" alt="Royal Digital">
+        </a>
 
-  for(const [key,label] of config.fields) {
-    let value = prompt(label);
-    if(value === null) return;
+        <div class="footer-links">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#services">Services</a>
+          <a href="#portfolio">Spotlight</a>
+          <a href="#clients">Clients</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
 
-    if(key === "features") {
-      record[key] = value.split(",").map(x=>x.trim()).filter(Boolean);
-    } else if(["display_order","rating"].includes(key)) {
-      record[key] = Number(value || 0);
-    } else {
-      record[key] = value;
-    }
-  }
+      <div class="footer-bottom">
+        <p>© <span id="year"></span> Royal Digital. All Rights Reserved.</p>
+        <p>Creative & Digital by <span>Royal Digital</span></p>
+      </div>
+    </div>
+  </footer>
 
-  config.flags.forEach(flag => {
-    record[flag] = confirm(
-      "Enable " + flag.replaceAll("_"," ") + "?"
+  <!-- WHATSAPP FLOATING BUTTON -->
+  <a class="whatsapp-float"
+     href="https://wa.me/917019006750"
+     target="_blank"
+     rel="noopener"
+     aria-label="Chat with Royal Digital on WhatsApp">
+    WhatsApp
+  </a>
+
+  <script>
+    // MOBILE MENU
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    menuToggle.addEventListener('click', function () {
+      navLinks.classList.toggle('active');
+    });
+
+    document.querySelectorAll('.nav-links a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        navLinks.classList.remove('active');
+      });
+    });
+
+    // CURRENT YEAR
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // SUPABASE CONNECTION
+    const SUPABASE_URL = 'https://kwczmrtgzuijunwkvkej.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_-O2kws00bL8L1nXiCVOlag_zhVa9mac';
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
     );
-  });
 
-  const {error} = await db.from(currentTable).insert(record);
-
-  if(error) {
-    say(error.message);
-    return;
-  }
-
-  say("Record added successfully.");
-  await loadRecords();
-}
-
-async function editItem(id) {
-  const {data,error} = await db.from(currentTable)
-    .select("*").eq("id",id).single();
-
-  if(error) {
-    say(error.message);
-    return;
-  }
-
-  const config = configs[currentTable];
-  const changes = {};
-
-  for(const [key,label] of config.fields) {
-    const oldValue = Array.isArray(data[key])
-      ? data[key].join(", ")
-      : (data[key] ?? "");
-
-    const value = prompt(label,oldValue);
-    if(value === null) return;
-
-    if(key === "features") {
-      changes[key] = value.split(",").map(x=>x.trim()).filter(Boolean);
-    } else if(["display_order","rating"].includes(key)) {
-      changes[key] = Number(value || 0);
-    } else {
-      changes[key] = value;
+    // SAFE HTML TEXT
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, function (char) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[char];
+      });
     }
-  }
 
-  for(const flag of config.flags) {
-    changes[flag] = confirm(
-      flag.replaceAll("_"," ") + " is currently " +
-      (data[flag] ? "ON" : "OFF") + ". OK = ON, Cancel = OFF"
-    );
-  }
+    // SAFE URL FOR MEDIA
+    function safeMediaURL(value) {
+      if (!value) return '';
 
-  const result = await db.from(currentTable)
-    .update(changes).eq("id",id);
+      try {
+        const url = new URL(value);
 
-  if(result.error) {
-    say(result.error.message);
-    return;
-  }
+        if (url.protocol === 'https:' || url.protocol === 'http:') {
+          return escapeHTML(url.href);
+        }
+      } catch (error) {
+        return '';
+      }
 
-  say("Record updated.");
-  await loadRecords();
-}
+      return '';
+    }
 
-async function deleteItem(id) {
-  if(!confirm("Are you sure you want to delete this record?")) return;
+    // YOUTUBE EMBED HELPER
+    function youtubeEmbed(url) {
+      if (!url) return '';
+      try {
+        const u = new URL(url);
+        let id = '';
+        if (u.hostname.includes('youtu.be')) id = u.pathname.split('/').filter(Boolean)[0] || '';
+        else if (u.hostname.includes('youtube.com')) id = u.searchParams.get('v') || u.pathname.split('/').filter(Boolean).pop() || '';
+        if (!/^[a-zA-Z0-9_-]{6,}$/.test(id)) return '';
+        return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id);
+      } catch (e) { return ''; }
+    }
 
-  const {error} = await db.from(currentTable).delete().eq("id",id);
+    // ROYAL DIGITAL SPOTLIGHT
+    async function loadSpotlight() {
+      const grid = document.getElementById('spotlightGrid');
+      try {
+        const { data, error } = await supabaseClient.from('spotlight_items')
+          .select('id,title,content_type,description,youtube_url,is_published,created_at')
+          .eq('is_published', true).order('created_at', { ascending: false });
+        if (error) throw error;
+        if (!data || !data.length) { grid.innerHTML = '<p class="muted">Royal Digital updates and featured videos will appear here soon.</p>'; return; }
+        grid.innerHTML = data.map(item => {
+          const embed = item.content_type === 'video' ? youtubeEmbed(item.youtube_url) : '';
+          return `<article class="spotlight-card">${embed ? `<iframe src="${embed}" title="${escapeHTML(item.title || 'Royal Digital video')}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` : ''}<small class="gold">${escapeHTML(item.content_type === 'video' ? 'Royal Digital Video' : 'Announcement')}</small><h3>${escapeHTML(item.title || 'Royal Digital Update')}</h3>${item.description ? `<p>${escapeHTML(item.description)}</p>` : ''}</article>`;
+        }).join('');
+      } catch (error) { console.error('Spotlight loading error:', error); grid.innerHTML = '<p class="muted">Royal Digital Spotlight is temporarily unavailable.</p>'; }
+    }
 
-  if(error) {
-    say(error.message);
-    return;
-  }
+    // LOAD VISIBLE CLIENTS FROM SUPABASE
+    // The Clients section is fully controlled by the Admin Panel.
+    async function loadClients() {
+      const grid = document.getElementById('clientGrid');
 
-  say("Record deleted.");
-  await loadRecords();
-}
+      try {
+        const { data, error } = await supabaseClient
+          .from('clients')
+          .select('id, name, logo_url, display_order, is_visible')
+          .eq('is_visible', true)
+          .order('display_order', { ascending: true });
 
-function uploadMedia(id) {
-  if(!["projects","clients"].includes(currentTable)) {
-    say("Upload is only available for Projects and Clients.");
-    return;
-  }
+        if (error) throw error;
 
-  currentUpload = {id,table:currentTable};
+        const clientsWithLogos = (data || []).filter(function (client) {
+          return client.name && safeMediaURL(client.logo_url);
+        });
 
-  const picker = document.getElementById("filePicker");
-  picker.value = "";
-  picker.accept = currentTable === "clients"
-    ? "image/jpeg,image/png,image/webp,image/gif"
-    : "image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm";
+        if (clientsWithLogos.length === 0) {
+          grid.innerHTML =
+            '<p class="muted">Our client brands will be showcased here soon.</p>';
+          return;
+        }
 
-  picker.click();
-}
+        grid.innerHTML = clientsWithLogos.map(function (client) {
+          const name = escapeHTML(client.name);
+          const logoURL = safeMediaURL(client.logo_url);
 
-document.getElementById("filePicker").addEventListener("change",async e=>{
-  const file = e.target.files[0];
-  if(!file || !currentUpload) return;
+          return `
+            <button class="client-card client-card-button" type="button" data-client-id="${escapeHTML(client.id)}" data-client-name="${name}" aria-label="View ${name} portfolio">
+              <img src="${logoURL}" alt="${name}" loading="lazy">
+              <span class="client-view-label">View Portfolio <span aria-hidden="true">→</span></span>
+            </button>
+          `;
+        }).join('');
 
-  const {id,table} = currentUpload;
+      } catch (error) {
+        console.error('Clients loading error:', error);
+        grid.innerHTML =
+          '<p class="muted">Our clients are temporarily unavailable. Please visit again soon.</p>';
+      }
+    }
 
-  const allowedImage = ["image/jpeg","image/png","image/webp","image/gif"];
-  const allowedVideo = ["video/mp4","video/webm"];
+    // CLIENT-WISE PORTFOLIO
+    let activeClientId = null;
+    let activeClientContent = 'video';
+    async function openClientPortfolio(clientId, clientName) {
+      activeClientId = clientId;
+      activeClientContent = 'video';
+      document.getElementById('clients').hidden = true;
+      document.getElementById('clientPortfolio').hidden = false;
+      document.getElementById('clientPortfolioTitle').innerHTML = `${escapeHTML(clientName)} <span class="gold">Portfolio</span>`;
+      document.querySelectorAll('.portfolio-tab').forEach(b => b.classList.toggle('active', b.dataset.content === 'video'));
+      await loadClientContent();
+      document.getElementById('clientPortfolio').scrollIntoView({behavior:'smooth',block:'start'});
+    }
+    async function loadClientContent() {
+      const grid = document.getElementById('clientContentGrid');
+      grid.innerHTML = '<p class="muted">Loading...</p>';
+      try {
+        const {data,error} = await supabaseClient.from('client_portfolio_items')
+          .select('id,client_id,content_type,title,description,youtube_url,image_url,is_published,display_order,created_at')
+          .eq('client_id',activeClientId).eq('is_published',true)
+          .eq('content_type',activeClientContent).order('display_order',{ascending:true}).order('created_at',{ascending:false});
+        if(error) throw error;
+        if(!data || !data.length){grid.innerHTML=`<p class="muted">No ${activeClientContent === 'video' ? 'videos' : 'posts'} added for this client yet.</p>`;return;}
+        grid.innerHTML = data.map(item => {
+          const media = activeClientContent === 'video' ? youtubeEmbed(item.youtube_url) : safeMediaURL(item.image_url);
+          if(!media) return '';
+          return `<article class="client-work-card">${activeClientContent === 'video' ? `<iframe src="${media}" title="${escapeHTML(item.title || 'Client video')}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` : `<img src="${media}" alt="${escapeHTML(item.title || 'Client creative')}" loading="lazy">`}<div class="work-kind">${activeClientContent === 'video' ? 'Video' : 'Creative Post'}</div>${item.title ? `<h3>${escapeHTML(item.title)}</h3>` : ''}${item.description ? `<p>${escapeHTML(item.description)}</p>` : ''}</article>`;
+        }).join('') || `<p class="muted">No ${activeClientContent === 'video' ? 'videos' : 'posts'} available.</p>`;
+      } catch(error){console.error('Client portfolio error:',error);grid.innerHTML='<p class="muted">Client portfolio is temporarily unavailable.</p>';}
+    }
+    document.getElementById('clientGrid').addEventListener('click',function(e){const card=e.target.closest('[data-client-id]');if(card)openClientPortfolio(card.dataset.clientId,card.dataset.clientName);});
+    document.getElementById('backToClients').addEventListener('click',function(){document.getElementById('clientPortfolio').hidden=true;document.getElementById('clients').hidden=false;document.getElementById('clients').scrollIntoView({behavior:'smooth',block:'start'});});
+    document.querySelectorAll('.portfolio-tab').forEach(button=>button.addEventListener('click',function(){activeClientContent=this.dataset.content;document.querySelectorAll('.portfolio-tab').forEach(b=>b.classList.toggle('active',b===this));loadClientContent();}));
 
-  if(!allowedImage.includes(file.type) &&
-     !(table === "projects" && allowedVideo.includes(file.type))) {
-    say("This file type is not allowed.");
-    return;
-  }
+    // LOAD ACTIVE PACKAGES FROM SUPABASE
+    async function loadPackages() {
+      const grid = document.getElementById('pricingGrid');
 
-  if(file.size > 50 * 1024 * 1024) {
-    say("File size must be 50 MB or less.");
-    return;
-  }
+      try {
+        const { data, error } = await supabaseClient
+          .from('packages')
+          .select('id, name, starting_price, description, features, is_active, display_order')
+          .eq('is_active', true)
+          .order('display_order', { ascending: true });
 
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
-  const path = table + "/" + Date.now() + "-" + safeName;
+        if (error) throw error;
 
-  say("Uploading file...");
+        if (!data || data.length === 0) {
+          grid.innerHTML =
+            '<p class="muted">Our packages will be updated soon. Contact us for a custom quote.</p>';
+          return;
+        }
 
-  const {error:uploadError} = await db.storage
-    .from("royal-portfolio")
-    .upload(path,file,{upsert:false});
+        grid.innerHTML = data.map(function (pkg, index) {
+          const price = Number(pkg.starting_price);
+          const priceHTML = Number.isFinite(price) && price > 0
+            ? `Starting ₹${price.toLocaleString('en-IN')}`
+            : 'Custom Quote';
 
-  if(uploadError) {
-    say(uploadError.message);
-    return;
-  }
+          // Normalize features saved as an array, multiline text, or one flattened string.
+          const rawFeatures = Array.isArray(pkg.features)
+            ? pkg.features
+            : (pkg.features ? [pkg.features] : []);
 
-  const {data} = db.storage
-    .from("royal-portfolio")
-    .getPublicUrl(path);
+          let features = rawFeatures
+            .flatMap(function (item) {
+              return String(item || '').split(/[\r\n]+|[•;]+/);
+            })
+            .map(function (item) { return item.trim(); })
+            .filter(Boolean);
 
-  let column;
+          // If the admin form stored all features in one line, split at known feature starts.
+          if (features.length === 1) {
+            features = features[0].split(/(?=\s*(?:\d+\s+(?:Professional Videos|Premium Creative Posts|Creative Social Media Posts|AI Videos|Extended Videos)|Basic Captions|Advanced Captions|Basic Content Planning|Content Planning|Strategic Content Planning|Monthly Content Shoot|Monthly Shoot|Professional Video Editing|Social Media Content Planning|Brand-focused Content|Brand Promotion|Creative Brand Promotion|Creative Campaign Planning|Brand Growth Strategy|Dedicated Priority Support|Priority Creative Support|Priority Support|Complete Social Media Management|Performance Monitoring))/i)
+              .map(function (item) { return item.trim(); })
+              .filter(Boolean);
+          }
 
-  if(table === "clients") {
-    column = "logo_url";
-  } else {
-    column = file.type.startsWith("video/")
-      ? "video_url"
-      : "cover_image_url";
-  }
+          const featuresHTML = features.length
+            ? `<ul class="package-features">
+                ${features.map(function (feature) {
+                  return `<li>${escapeHTML(feature)}</li>`;
+                }).join('')}
+              </ul>`
+            : '';
 
-  const {error:updateError} = await db.from(table)
-    .update({[column]:data.publicUrl}).eq("id",id);
+          return `
+            <article class="price-card ${index === 1 ? 'featured' : ''}">
+              <h3>${escapeHTML(pkg.name || 'Creative Package')}</h3>
+              <div class="price-label">${priceHTML}</div>
+              ${pkg.description ? `<p>${escapeHTML(pkg.description)}</p>` : ''}
+              ${featuresHTML}
+              <a class="${index === 1 ? 'btn' : 'btn-outline'}" href="#contact">Get Details</a>
+            </article>
+          `;
+        }).join('');
 
-  if(updateError) {
-    say("File uploaded, but record update failed: " + updateError.message);
-    return;
-  }
+      } catch (error) {
+        console.error('Packages loading error:', error);
+        grid.innerHTML =
+          '<p class="muted">Packages are temporarily unavailable. Please contact us for details.</p>';
+      }
+    }
 
-  say("File uploaded successfully.");
-  await loadRecords();
-});
+    // LOAD WEBSITE DATA
+    loadSpotlight();
+    loadClients();
+    loadPackages();
+  </script>
 
-document.getElementById("tabs").addEventListener("click",e=>{
-  const button = e.target.closest("button[data-table]");
-  if(!button) return;
-
-  currentTable = button.dataset.table;
-
-  document.querySelectorAll(".tabs button")
-    .forEach(b=>b.classList.remove("active"));
-
-  button.classList.add("active");
-  say("");
-  loadRecords();
-});
-
-db.auth.getSession().then(({data})=>{
-  if(data.session) showApp();
-});
-
-db.auth.onAuthStateChange((event,session)=>{
-  if(event === "SIGNED_OUT") {
-    document.getElementById("app").style.display = "none";
-    document.getElementById("loginBox").style.display = "block";
-  }
-});
-</script>
 </body>
 </html>
