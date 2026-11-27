@@ -179,6 +179,12 @@ const configs = {
   packages:{title:"Packages",fields:[["name","Package name"],["starting_price","Starting price"],["description","Description"],["features","Features (separate with commas)"],["display_order","Display order"]],flags:["is_active"]}
 };
 function say(m){document.getElementById('message').textContent=m;}
+function offerFilePicker(message){
+ const box=document.getElementById('message');box.textContent=message+' ';
+ const btn=document.createElement('button');btn.type='button';btn.className='secondary';btn.textContent='Choose file from phone';
+ btn.addEventListener('click',()=>{const p=document.getElementById('filePicker');p.click();});
+ box.appendChild(btn);
+}
 function safe(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 async function login(){const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value,output=document.getElementById('loginMessage');output.textContent='Signing in...';const {error}=await db.auth.signInWithPassword({email,password});if(error){output.textContent=error.message;return;}await showApp();}
 async function logout(){await db.auth.signOut();document.getElementById('app').style.display='none';document.getElementById('loginBox').style.display='block';}
@@ -227,7 +233,7 @@ async function addPortfolioItem(){
  if(t==='post'||!record.youtube_url){
    const picker=document.getElementById('filePicker');picker.value='';picker.accept=t==='post'?'image/*':'video/mp4,video/webm,video/quicktime';
    currentUpload={pendingRecord:record,table:'client_portfolio_items',column:t==='post'?'image_url':'video_file_url',kind:t==='post'?'image':'video'};
-   say(t==='post'?'Choose the post image from your phone.':'Choose the video file from your phone.');picker.click();return;
+   offerFilePicker(t==='post'?'Tap Choose file from phone to select the post image.':'Tap Choose file from phone to select the video.');return;
  }
  const {error:insertError}=await db.from('client_portfolio_items').insert(record);
  if(insertError){say(insertError.message);return;}say('YouTube video added.');loadRecords();
@@ -242,7 +248,7 @@ async function addSpotlightItem(){
    if(method.trim().toLowerCase()==='youtube'){const url=prompt('YouTube video URL:');if(!url)return;if(!youtubeId(url)){say('Invalid YouTube URL.');return;}row.youtube_url=url.trim();}
    else if(method.trim().toLowerCase()!=='upload'){say('Type UPLOAD or YOUTUBE.');return;}
  }
- if(t==='video'&&!row.youtube_url){const p=document.getElementById('filePicker');p.value='';p.accept='video/mp4,video/webm,video/quicktime';currentUpload={pendingRecord:row,table:'spotlight_items',column:'video_file_url',kind:'video'};say('Choose Royal Digital promo video from your phone.');p.click();return;}
+ if(t==='video'&&!row.youtube_url){const p=document.getElementById('filePicker');p.value='';p.accept='video/mp4,video/webm,video/quicktime';currentUpload={pendingRecord:row,table:'spotlight_items',column:'video_file_url',kind:'video'};offerFilePicker('Tap Choose file from phone to select Royal Digital promo video.');return;}
  const {error}=await db.from('spotlight_items').insert(row);if(error){say(error.message);return;}say('Spotlight content added.');loadRecords();
 }
 async function editItem(id){if(currentTable==='client_portfolio'){const {data,error}=await db.from('client_portfolio_items').select('*').eq('id',id).single();if(error){say(error.message);return;}const title=prompt('Title',data.title||'');if(title===null)return;const desc=prompt('Description',data.description||'');if(desc===null)return;const pub=confirm('Published? OK = yes, Cancel = draft');const changes={title,description:desc,is_published:pub};if(data.content_type==='video'&&data.youtube_url){const url=prompt('YouTube URL',data.youtube_url||'');if(url===null)return;if(!youtubeId(url)){say('Invalid YouTube URL.');return;}changes.youtube_url=url;}const {error:e}=await db.from('client_portfolio_items').update(changes).eq('id',id);if(e){say(e.message);return;}say('Updated.');return loadRecords();}
