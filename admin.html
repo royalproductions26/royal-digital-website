@@ -146,7 +146,8 @@ main {max-width:1100px;margin:auto;padding:24px 16px}
     <button class="active" data-table="clients">Our Clients</button>
     <button data-table="client_portfolio">Client Videos & Pictures</button>
     <button data-table="projects">Legacy Projects</button>
-    <button data-table="spotlight">Royal Spotlight</button>
+    <button data-table="highlights">Royal Digital Highlights</button>
+    <button data-table="spotlight">Royal Digital Spotlight</button>
     <button data-table="testimonials">Testimonials</button>
     <button data-table="packages">Packages</button>
   </div>
@@ -192,7 +193,7 @@ async function showApp(){document.getElementById('loginBox').style.display='none
 function setTabs(){document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.table===currentTable));}
 async function loadRecords(){setTabs();const box=document.getElementById('records');box.textContent='Loading...';
  if(currentTable==='client_portfolio') return loadClientPortfolio();
- if(currentTable==='spotlight') return loadSpotlight();
+ if(currentTable==='spotlight' || currentTable==='highlights') return loadSpotlight();
  const cfg=configs[currentTable];document.getElementById('sectionTitle').textContent=cfg.title;
  const {data,error}=await db.from(currentTable).select('*').order('created_at',{ascending:false});if(error){box.textContent=error.message;return;}
  if(!data?.length){box.innerHTML='<div class="empty">No records yet. Tap Add New to create one.</div>';return;}
@@ -210,11 +211,20 @@ async function loadClientPortfolio(){
  const selected=clients.find(c=>String(c.id)===String(activeClientId));
  const filtered=(items||[]).filter(x=>String(x.client_id)===String(activeClientId) && (portfolioTypeFilter==='all'||x.content_type===portfolioTypeFilter));
  const selector=`<div style="margin-bottom:16px"><label for="portfolioClient">Select client</label><select id="portfolioClient">${clients.map(c=>`<option value="${safe(c.id)}" ${String(c.id)===String(activeClientId)?'selected':''}>${safe(c.name)}</option>`).join('')}</select><div class="actions"><button type="button" class="${portfolioTypeFilter==='all'?'':'secondary'}" data-filter="all">All</button><button type="button" class="${portfolioTypeFilter==='video'?'':'secondary'}" data-filter="video">Videos</button><button type="button" class="${portfolioTypeFilter==='post'?'':'secondary'}" data-filter="post">Pictures / Posts</button></div></div>`;
- const content=filtered.length?filtered.map(x=>`<div class="item"><div class="item-info">${x.content_type==='post'&&x.image_url?`<img class="thumb" src="${safe(x.image_url)}" alt="Post image">`:'<div class="video-thumb">▶</div>'}<div><strong>${safe(x.title||(x.content_type==='video'?'YouTube Video':'Post'))}</strong><small>${safe(x.content_type==='video'?'YouTube video':'Picture / Post')}</small><small>${safe(x.video_file_url||x.video_url||x.youtube_url||x.image_url||'')}</small><span class="status">${x.is_published?'Published':'Draft'}</span></div></div><div class="actions"><button class="secondary" data-action="edit" data-id="${safe(x.id)}">Edit</button>${x.content_type==='post'?`<button class="secondary" data-action="upload-item" data-id="${safe(x.id)}">Replace Image</button>`:`<button class="secondary" data-action="upload-video" data-id="${safe(x.id)}">Upload / Replace Video</button>`}<button class="danger" data-action="delete" data-id="${safe(x.id)}">Delete</button></div></div>`).join(''):`<div class="empty">No ${portfolioTypeFilter==='all'?'videos or pictures':portfolioTypeFilter==='video'?'videos':'pictures'} for ${safe(selected.name)} yet. Tap Add New to add content.</div>`;
+ const content=filtered.length?filtered.map(x=>`<div class="item"><div class="item-info">${x.content_type==='post'&&x.image_url?`<img class="thumb" src="${safe(x.image_url)}" alt="Post image">`:'<div class="video-thumb">▶</div>'}<div><strong>${safe(x.title||(x.content_type==='video'?'YouTube Video':'Post'))}</strong><small>${safe(x.content_type==='video'?'YouTube video':'Picture / Post')}</small><small>${safe(x.video_file_url||x.youtube_url||x.image_url||'')}</small><span class="status">${x.is_published?'Published':'Draft'}</span></div></div><div class="actions"><button class="secondary" data-action="edit" data-id="${safe(x.id)}">Edit</button>${x.content_type==='post'?`<button class="secondary" data-action="upload-item" data-id="${safe(x.id)}">Replace Image</button>`:''}<button class="danger" data-action="delete" data-id="${safe(x.id)}">Delete</button></div></div>`).join(''):`<div class="empty">No ${portfolioTypeFilter==='all'?'videos or pictures':portfolioTypeFilter==='video'?'videos':'pictures'} for ${safe(selected.name)} yet. Tap Add New to add content.</div>`;
  box.innerHTML=selector+content;
 }
-async function loadSpotlight(){document.getElementById('sectionTitle').textContent='Royal Digital Spotlight';const box=document.getElementById('records');const {data,error}=await db.from('spotlight_items').select('*').order('created_at',{ascending:false});if(error){box.textContent=error.message+' — Run the supplied SQL setup first.';return;}if(!data?.length){box.innerHTML='<div class="empty">No Spotlight content yet. Add Royal Digital videos or announcements.</div>';return;}box.innerHTML=data.map(x=>`<div class="item"><div class="item-info"><div class="video-thumb">${x.content_type==='video'?'▶':'RD'}</div><div><strong>${safe(x.title)}</strong><small>${safe(x.content_type)} · ${safe(x.video_file_url||x.video_url||x.youtube_url||x.description||'')}</small><span class="status">${x.is_published?'Published':'Draft'}</span></div></div><div class="actions"><button class="secondary" data-action="edit" data-id="${safe(x.id)}">Edit</button>${x.content_type==='video'?`<button class="secondary" data-action="upload-video" data-id="${safe(x.id)}">Upload / Replace Video</button>`:''}<button class="danger" data-action="delete" data-id="${safe(x.id)}">Delete</button></div></div>`).join('');}
-async function addItem(){if(currentTable==='client_portfolio')return addPortfolioItem();if(currentTable==='spotlight')return addSpotlightItem();const cfg=configs[currentTable],record={};for(const [key,label] of cfg.fields){let v=prompt(label);if(v===null)return;record[key]=key==='features'?v.split(',').map(x=>x.trim()).filter(Boolean):['display_order','rating'].includes(key)?Number(v||0):v;}cfg.flags.forEach(f=>record[f]=confirm('Enable '+f.replaceAll('_',' ')+'?'));const {error}=await db.from(currentTable).insert(record);if(error){say(error.message);return;}say('Record added.');loadRecords();}
+async function loadSpotlight(){
+ const isHighlights=currentTable==='highlights';
+ document.getElementById('sectionTitle').textContent=isHighlights?'Royal Digital Highlights':'Royal Digital Spotlight';
+ const box=document.getElementById('records');
+ let query=db.from('spotlight_items').select('*').eq('is_highlight',isHighlights).order('created_at',{ascending:false});
+ const {data,error}=await query;
+ if(error){box.textContent=error.message+' — Run the split Highlights / Spotlight SQL first.';return;}
+ if(!data?.length){box.innerHTML=`<div class="empty">No ${isHighlights?'Highlights':'Spotlight'} content yet. Tap Add New to create one.</div>`;return;}
+ box.innerHTML=data.map(x=>`<div class="item"><div class="item-info"><div class="video-thumb">${x.content_type==='video'?'▶':'RD'}</div><div><strong>${safe(x.title)}</strong><small>${safe(x.content_type)} · ${safe(x.video_file_url||x.video_url||x.youtube_url||x.description||'')}</small><span class="status">${x.is_published?'Published':'Draft'}</span></div></div><div class="actions"><button class="secondary" data-action="edit" data-id="${safe(x.id)}">Edit</button>${x.content_type==='video'?`<button class="secondary" data-action="upload-highlight-video" data-id="${safe(x.id)}">Upload / Replace Video</button>`:''}<button class="danger" data-action="delete" data-id="${safe(x.id)}">Delete</button></div></div>`).join('');
+}
+async function addItem(){if(currentTable==='client_portfolio')return addPortfolioItem();if(currentTable==='spotlight'||currentTable==='highlights')return addSpotlightItem();const cfg=configs[currentTable],record={};for(const [key,label] of cfg.fields){let v=prompt(label);if(v===null)return;record[key]=key==='features'?v.split(',').map(x=>x.trim()).filter(Boolean):['display_order','rating'].includes(key)?Number(v||0):v;}cfg.flags.forEach(f=>record[f]=confirm('Enable '+f.replaceAll('_',' ')+'?'));const {error}=await db.from(currentTable).insert(record);if(error){say(error.message);return;}say('Record added.');loadRecords();}
 async function addPortfolioItem(){
  const {data:clients,error}=await db.from('clients').select('id,name').order('display_order',{ascending:true});
  if(error||!clients?.length){say('Add clients first.');return;}
@@ -242,68 +252,35 @@ function youtubeId(url){try{const u=new URL(url);if(u.hostname.includes('youtu.b
 async function addSpotlightItem(){
  const type=prompt('Type VIDEO or ANNOUNCEMENT','VIDEO');if(!type)return;const t=type.trim().toLowerCase();if(!['video','announcement'].includes(t)){say('Enter VIDEO or ANNOUNCEMENT.');return;}
  const title=prompt('Title:');if(!title)return;const description=prompt('Description / announcement text (optional)','');if(description===null)return;
- const row={title,content_type:t,description,is_published:confirm('Publish now?')};
+ const row={title,content_type:t,description,is_published:confirm('Publish now?'),is_highlight:currentTable==='highlights'};
  if(t==='video'){
    const method=prompt('Video source: type UPLOAD for mobile video file, or YOUTUBE for YouTube link','UPLOAD');if(!method)return;
    if(method.trim().toLowerCase()==='youtube'){const url=prompt('YouTube video URL:');if(!url)return;if(!youtubeId(url)){say('Invalid YouTube URL.');return;}row.youtube_url=url.trim();}
    else if(method.trim().toLowerCase()!=='upload'){say('Type UPLOAD or YOUTUBE.');return;}
  }
- if(t==='video'&&!row.youtube_url){const p=document.getElementById('filePicker');p.value='';p.accept='video/mp4,video/webm,video/quicktime';currentUpload={pendingRecord:row,table:'spotlight_items',column:'video_file_url',kind:'video'};offerFilePicker('Tap Choose file from phone to select Royal Digital promo video.');return;}
+ if(t==='video'&&!row.youtube_url){const p=document.getElementById('filePicker');p.value='';p.accept='video/mp4,video/webm,video/quicktime';currentUpload={pendingRecord:row,table:'spotlight_items',column:'video_file_url',kind:'video'};offerFilePicker('Tap Choose file from phone to select video file.');return;}
  const {error}=await db.from('spotlight_items').insert(row);if(error){say(error.message);return;}say('Spotlight content added.');loadRecords();
 }
 async function editItem(id){if(currentTable==='client_portfolio'){const {data,error}=await db.from('client_portfolio_items').select('*').eq('id',id).single();if(error){say(error.message);return;}const title=prompt('Title',data.title||'');if(title===null)return;const desc=prompt('Description',data.description||'');if(desc===null)return;const pub=confirm('Published? OK = yes, Cancel = draft');const changes={title,description:desc,is_published:pub};if(data.content_type==='video'&&data.youtube_url){const url=prompt('YouTube URL',data.youtube_url||'');if(url===null)return;if(!youtubeId(url)){say('Invalid YouTube URL.');return;}changes.youtube_url=url;}const {error:e}=await db.from('client_portfolio_items').update(changes).eq('id',id);if(e){say(e.message);return;}say('Updated.');return loadRecords();}
- if(currentTable==='spotlight'){const {data,error}=await db.from('spotlight_items').select('*').eq('id',id).single();if(error){say(error.message);return;}const title=prompt('Title',data.title||'');if(title===null)return;const desc=prompt('Description',data.description||'');if(desc===null)return;const changes={title,description:desc,is_published:confirm('Published? OK = yes, Cancel = draft')};if(data.content_type==='video'&&data.youtube_url){const url=prompt('YouTube URL',data.youtube_url||'');if(url===null)return;if(!youtubeId(url)){say('Invalid YouTube URL.');return;}changes.youtube_url=url;}const {error:e}=await db.from('spotlight_items').update(changes).eq('id',id);if(e){say(e.message);return;}say('Updated.');return loadRecords();}
+ if(currentTable==='spotlight'||currentTable==='highlights'){const {data,error}=await db.from('spotlight_items').select('*').eq('id',id).single();if(error){say(error.message);return;}const title=prompt('Title',data.title||'');if(title===null)return;const desc=prompt('Description',data.description||'');if(desc===null)return;const changes={title,description:desc,is_published:confirm('Published? OK = yes, Cancel = draft')};if(data.content_type==='video'&&data.youtube_url){const url=prompt('YouTube URL',data.youtube_url||'');if(url===null)return;if(!youtubeId(url)){say('Invalid YouTube URL.');return;}changes.youtube_url=url;}const {error:e}=await db.from('spotlight_items').update(changes).eq('id',id);if(e){say(e.message);return;}say('Updated.');return loadRecords();}
  const {data,error}=await db.from(currentTable).select('*').eq('id',id).single();if(error){say(error.message);return;}const cfg=configs[currentTable],changes={};for(const [k,l] of cfg.fields){const old=Array.isArray(data[k])?data[k].join(', '):(data[k]??'');const v=prompt(l,old);if(v===null)return;changes[k]=k==='features'?v.split(',').map(x=>x.trim()).filter(Boolean):['display_order','rating'].includes(k)?Number(v||0):v;}cfg.flags.forEach(f=>changes[f]=confirm(f.replaceAll('_',' ')+' is currently '+(data[f]?'ON':'OFF')+'. OK = ON, Cancel = OFF'));const {error:e}=await db.from(currentTable).update(changes).eq('id',id);if(e){say(e.message);return;}say('Updated.');loadRecords();}
-async function deleteItem(id){if(!confirm('Delete this content permanently?'))return;const table=currentTable==='client_portfolio'?'client_portfolio_items':currentTable==='spotlight'?'spotlight_items':currentTable;const {error}=await db.from(table).delete().eq('id',id);if(error){say(error.message);return;}say('Deleted.');loadRecords();}
+async function deleteItem(id){if(!confirm('Delete this content permanently?'))return;const table=currentTable==='client_portfolio'?'client_portfolio_items':(currentTable==='spotlight'||currentTable==='highlights')?'spotlight_items':currentTable;const {error}=await db.from(table).delete().eq('id',id);if(error){say(error.message);return;}say('Deleted.');loadRecords();}
 function uploadMedia(id){currentUpload={id,table:currentTable,column:currentTable==='clients'?'logo_url':'cover_image_url'};const p=document.getElementById('filePicker');p.value='';p.accept='image/jpeg,image/png,image/webp,image/gif';p.click();}
-document.getElementById('filePicker').addEventListener('change', async e => {
- const file=e.target.files && e.target.files[0];
- if(!file || !currentUpload) return;
- let {id,table,column,kind='image',pendingRecord}=currentUpload;
- const imageTypes=['image/jpeg','image/png','image/webp','image/gif'];
- const videoTypes=['video/mp4','video/webm','video/quicktime'];
- const ext=(file.name.split('.').pop()||'').toLowerCase();
- const isVideo=kind==='video' && (videoTypes.includes(file.type) || ['mp4','webm','mov'].includes(ext));
- const isImage=kind==='image' && (imageTypes.includes(file.type) || ['jpg','jpeg','png','webp','gif'].includes(ext));
- if(kind==='image'&&!isImage){say('File type not supported. Choose JPG, PNG, WEBP or GIF.');return;}
- if(kind==='video'&&!isVideo){say('File type not supported. Choose MP4, WEBM or MOV. Selected type: '+(file.type||'unknown'));return;}
- if(file.size>50*1024*1024){say('File is larger than 50 MB. Please compress it or use a YouTube link.');return;}
- try {
-   const {data:sessionData,error:sessionError}=await db.auth.getSession();
-   if(sessionError) throw sessionError;
-   if(!sessionData.session){throw new Error('Admin session expired. Please log in again before uploading.');}
-   if(pendingRecord){
-     say('Step 1/3: Saving content record...');
-     const {data:created,error:insertErr}=await db.from(table).insert(pendingRecord).select('id').single();
-     if(insertErr) throw new Error('Record save failed: '+insertErr.message);
-     id=created.id;
-     currentUpload={id,table,column,kind};
-   }
-   const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
-   const folder=kind==='video'?'videos/':'posts/';
-   const path=folder+Date.now()+'-'+safeName;
-   say('Step 2/3: Uploading file to Storage...');
-   const {data:uploaded,error:uploadError}=await db.storage.from('royal-portfolio').upload(path,file,{upsert:false,contentType:file.type||undefined});
-   if(uploadError) throw new Error('Storage upload failed: '+uploadError.message);
-   if(!uploaded || !uploaded.path) throw new Error('Storage did not return an uploaded file path.');
-   const {data:publicData}=db.storage.from('royal-portfolio').getPublicUrl(uploaded.path);
-   const publicUrl=publicData && publicData.publicUrl;
-   if(!publicUrl) throw new Error('File uploaded, but Supabase did not return a public URL.');
-   say('Step 3/3: Saving public URL to database...');
-   let updateValues={[column]:publicUrl};
-   if(kind==='video') updateValues={video_file_url:publicUrl,video_url:publicUrl,media_source:'upload'};
-   const {data:updated,error:updateError}=await db.from(table).update(updateValues).eq('id',id).select('id').single();
-   if(updateError) throw new Error('File uploaded, but database URL save failed: '+updateError.message);
-   if(!updated) throw new Error('File uploaded, but database row was not updated.');
-   say((kind==='video'?'VIDEO':'IMAGE')+' UPLOAD SUCCESSFUL. URL saved.');
-   currentUpload=null;
-   await loadRecords();
- } catch(err) {
-   console.error('Royal Digital upload error:',err);
-   say('UPLOAD FAILED: '+(err && err.message ? err.message : String(err))+' — Record is kept; you can retry using Upload / Replace Video.');
- }
+document.getElementById('filePicker').addEventListener('change',async e=>{
+ const file=e.target.files[0];if(!file||!currentUpload)return;let {id,table,column,kind='image',pendingRecord}=currentUpload;
+ const imageTypes=['image/jpeg','image/png','image/webp','image/gif'];const videoTypes=['video/mp4','video/webm','video/quicktime'];
+ if(kind==='image'&&!imageTypes.includes(file.type)){say('Choose JPG, PNG, WEBP or GIF image.');return;}
+ if(kind==='video'&&!videoTypes.includes(file.type)){say('Choose MP4, WEBM or MOV video.');return;}
+ if(file.size>50*1024*1024){say('Free storage upload limit is 50 MB per file.');return;}
+ if(pendingRecord){say('Saving content and uploading file...');const {data:created,error:insertErr}=await db.from(table).insert(pendingRecord).select().single();if(insertErr){say(insertErr.message);currentUpload=null;return;}id=created.id;currentUpload={id,table,column,kind};}
+ const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const path=(kind==='video'?'videos/':'posts/')+Date.now()+'-'+safeName;
+ say(kind==='video'?'Uploading video... please wait.':'Uploading image...');
+ const {error:up}=await db.storage.from('royal-portfolio').upload(path,file,{upsert:false});if(up){say(up.message);return;}
+ const {data}=db.storage.from('royal-portfolio').getPublicUrl(path);const {error}=await db.from(table).update({[column]:data.publicUrl}).eq('id',id);
+ if(error){say('Uploaded but database save failed: '+error.message);return;}
+ say(kind==='video'?'Video uploaded and saved successfully.':'Image uploaded successfully.');currentUpload=null;loadRecords();
 });
-document.getElementById('records').addEventListener('click',e=>{const filter=e.target.closest('button[data-filter]');if(filter){portfolioTypeFilter=filter.dataset.filter;loadRecords();return;}const b=e.target.closest('button[data-action]');if(!b)return;const id=b.dataset.id,action=b.dataset.action;if(action==='manage-portfolio'){activeClientId=id;portfolioTypeFilter='all';currentTable='client_portfolio';setTabs();say('');loadRecords();return;}if(action==='edit')editItem(id);if(action==='delete')deleteItem(id);if(action==='upload')uploadMedia(id);if(action==='upload-item'){currentUpload={id,table:'client_portfolio_items',column:'image_url',kind:'image'};const p=document.getElementById('filePicker');p.value='';p.accept='image/jpeg,image/png,image/webp,image/gif';p.click();}if(action==='upload-video'){currentUpload={id,table:currentTable==='spotlight'?'spotlight_items':'client_portfolio_items',column:'video_file_url',kind:'video'};const p=document.getElementById('filePicker');p.value='';p.accept='video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov';p.click();}});
+document.getElementById('records').addEventListener('click',e=>{const filter=e.target.closest('button[data-filter]');if(filter){portfolioTypeFilter=filter.dataset.filter;loadRecords();return;}const b=e.target.closest('button[data-action]');if(!b)return;const id=b.dataset.id,action=b.dataset.action;if(action==='manage-portfolio'){activeClientId=id;portfolioTypeFilter='all';currentTable='client_portfolio';setTabs();say('');loadRecords();return;}if(action==='edit')editItem(id);if(action==='delete')deleteItem(id);if(action==='upload')uploadMedia(id);if(action==='upload-highlight-video'){currentUpload={id,table:'spotlight_items',column:'video_file_url',kind:'video'};const p=document.getElementById('filePicker');p.value='';p.accept='video/mp4,video/webm,video/quicktime';p.click();return;}if(action==='upload-item'){currentUpload={id,table:'client_portfolio_items',column:'image_url'};const p=document.getElementById('filePicker');p.value='';p.accept='image/jpeg,image/png,image/webp,image/gif';p.click();}});
 document.getElementById('records').addEventListener('change',e=>{if(e.target.id==='portfolioClient'){activeClientId=e.target.value;portfolioTypeFilter='all';loadRecords();}});
 document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-table]');if(!b)return;currentTable=b.dataset.table;say('');loadRecords();});
 db.auth.getSession().then(({data})=>{if(data.session)showApp();});db.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT'){document.getElementById('app').style.display='none';document.getElementById('loginBox').style.display='block';}});
