@@ -225,7 +225,7 @@ async function addPortfolioItem(){
    else if(method.trim().toLowerCase()!=='upload'){say('Type UPLOAD or YOUTUBE.');return;}
  }
  if(t==='post'||!record.youtube_url){
-   const picker=document.getElementById('filePicker');picker.value='';picker.accept=t==='post?'image/*':'video/mp4,video/webm,video/quicktime';
+   const picker=document.getElementById('filePicker');picker.value='';picker.accept=t==='post'?'image/*':'video/mp4,video/webm,video/quicktime';
    currentUpload={pendingRecord:record,table:'client_portfolio_items',column:t==='post'?'image_url':'video_file_url',kind:t==='post'?'image':'video'};
    say(t==='post'?'Choose the post image from your phone.':'Choose the video file from your phone.');picker.click();return;
  }
