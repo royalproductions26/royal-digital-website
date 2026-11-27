@@ -1118,7 +1118,7 @@
         else if(data.youtube_url){const embed=youtubeEmbed(data.youtube_url);if(!embed)return;media.innerHTML=`<iframe src="${embed}?autoplay=1&mute=1&controls=1&playsinline=1" title="${escapeHTML(data.title||'Royal Digital Promo')}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0"></iframe>`;wrap.classList.add('show');}
       }catch(e){console.warn('Hero video not available',e);}
     }
-    document.getElementById('rdHeroClose').addEventListener('click',()=>{const wrap=document.getElementById('rdHeroVideo');wrap.classList.remove('show');document.getElementById('rdHeroMedia').innerHTML='';});
+    document.addEventListener('DOMContentLoaded',()=>{document.getElementById('rdHeroClose').addEventListener('click',()=>{const wrap=document.getElementById('rdHeroVideo');wrap.classList.remove('show');document.getElementById('rdHeroMedia').innerHTML='';});});
 
     // LOAD VISIBLE CLIENTS FROM SUPABASE
     // The Clients section is fully controlled by the Admin Panel.
