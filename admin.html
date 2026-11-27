@@ -224,20 +224,26 @@ async function addPortfolioItem(){
    if(method.trim().toLowerCase()==='youtube'){const url=prompt('Paste YouTube video URL:');if(!url)return;if(!youtubeId(url)){say('Please enter a valid YouTube URL.');return;}record.youtube_url=url.trim();}
    else if(method.trim().toLowerCase()!=='upload'){say('Type UPLOAD or YOUTUBE.');return;}
  }
- const {data,error:insertError}=await db.from('client_portfolio_items').insert(record).select().single();
- if(insertError){say(insertError.message);return;}
- if(t==='post'||!record.youtube_url){currentUpload={id:data.id,table:'client_portfolio_items',column:t==='post'?'image_url':'video_file_url',kind:t==='post'?'image':'video'};const picker=document.getElementById('filePicker');picker.value='';picker.accept=t==='post'?'image/jpeg,image/png,image/webp,image/gif':'video/mp4,video/webm,video/quicktime';picker.click();say(t==='post'?'Choose the post image from your phone.':'Choose the video file from your phone.');return;}
- say('YouTube video added.');loadRecords();
+ if(t==='post'||!record.youtube_url){
+   const picker=document.getElementById('filePicker');picker.value='';picker.accept=t==='post?'image/*':'video/mp4,video/webm,video/quicktime';
+   currentUpload={pendingRecord:record,table:'client_portfolio_items',column:t==='post'?'image_url':'video_file_url',kind:t==='post'?'image':'video'};
+   say(t==='post'?'Choose the post image from your phone.':'Choose the video file from your phone.');picker.click();return;
+ }
+ const {error:insertError}=await db.from('client_portfolio_items').insert(record);
+ if(insertError){say(insertError.message);return;}say('YouTube video added.');loadRecords();
 }
 function youtubeId(url){try{const u=new URL(url);if(u.hostname.includes('youtu.be'))return u.pathname.slice(1);if(u.hostname.includes('youtube.com'))return u.searchParams.get('v')||u.pathname.split('/').filter(Boolean).pop();}catch(e){}return '';}
 async function addSpotlightItem(){
  const type=prompt('Type VIDEO or ANNOUNCEMENT','VIDEO');if(!type)return;const t=type.trim().toLowerCase();if(!['video','announcement'].includes(t)){say('Enter VIDEO or ANNOUNCEMENT.');return;}
  const title=prompt('Title:');if(!title)return;const description=prompt('Description / announcement text (optional)','');if(description===null)return;
  const row={title,content_type:t,description,is_published:confirm('Publish now?')};
- if(t==='video'){const method=prompt('Video source: type UPLOAD for mobile video file, or YOUTUBE for YouTube link','UPLOAD');if(!method)return;if(method.trim().toLowerCase()==='youtube'){const url=prompt('YouTube video URL:');if(!url)return;if(!youtubeId(url)){say('Invalid YouTube URL.');return;}row.youtube_url=url.trim();}else if(method.trim().toLowerCase()!=='upload'){say('Type UPLOAD or YOUTUBE.');return;}}
- const {data,error}=await db.from('spotlight_items').insert(row).select().single();if(error){say(error.message);return;}
- if(t==='video'&&!row.youtube_url){currentUpload={id:data.id,table:'spotlight_items',column:'video_file_url',kind:'video'};const p=document.getElementById('filePicker');p.value='';p.accept='video/mp4,video/webm,video/quicktime';p.click();say('Choose Royal Digital promo video from your phone.');return;}
- say('Spotlight content added.');loadRecords();
+ if(t==='video'){
+   const method=prompt('Video source: type UPLOAD for mobile video file, or YOUTUBE for YouTube link','UPLOAD');if(!method)return;
+   if(method.trim().toLowerCase()==='youtube'){const url=prompt('YouTube video URL:');if(!url)return;if(!youtubeId(url)){say('Invalid YouTube URL.');return;}row.youtube_url=url.trim();}
+   else if(method.trim().toLowerCase()!=='upload'){say('Type UPLOAD or YOUTUBE.');return;}
+ }
+ if(t==='video'&&!row.youtube_url){const p=document.getElementById('filePicker');p.value='';p.accept='video/mp4,video/webm,video/quicktime';currentUpload={pendingRecord:row,table:'spotlight_items',column:'video_file_url',kind:'video'};say('Choose Royal Digital promo video from your phone.');p.click();return;}
+ const {error}=await db.from('spotlight_items').insert(row);if(error){say(error.message);return;}say('Spotlight content added.');loadRecords();
 }
 async function editItem(id){if(currentTable==='client_portfolio'){const {data,error}=await db.from('client_portfolio_items').select('*').eq('id',id).single();if(error){say(error.message);return;}const title=prompt('Title',data.title||'');if(title===null)return;const desc=prompt('Description',data.description||'');if(desc===null)return;const pub=confirm('Published? OK = yes, Cancel = draft');const changes={title,description:desc,is_published:pub};if(data.content_type==='video'&&data.youtube_url){const url=prompt('YouTube URL',data.youtube_url||'');if(url===null)return;if(!youtubeId(url)){say('Invalid YouTube URL.');return;}changes.youtube_url=url;}const {error:e}=await db.from('client_portfolio_items').update(changes).eq('id',id);if(e){say(e.message);return;}say('Updated.');return loadRecords();}
  if(currentTable==='spotlight'){const {data,error}=await db.from('spotlight_items').select('*').eq('id',id).single();if(error){say(error.message);return;}const title=prompt('Title',data.title||'');if(title===null)return;const desc=prompt('Description',data.description||'');if(desc===null)return;const changes={title,description:desc,is_published:confirm('Published? OK = yes, Cancel = draft')};if(data.content_type==='video'&&data.youtube_url){const url=prompt('YouTube URL',data.youtube_url||'');if(url===null)return;if(!youtubeId(url)){say('Invalid YouTube URL.');return;}changes.youtube_url=url;}const {error:e}=await db.from('spotlight_items').update(changes).eq('id',id);if(e){say(e.message);return;}say('Updated.');return loadRecords();}
@@ -245,11 +251,12 @@ async function editItem(id){if(currentTable==='client_portfolio'){const {data,er
 async function deleteItem(id){if(!confirm('Delete this content permanently?'))return;const table=currentTable==='client_portfolio'?'client_portfolio_items':currentTable==='spotlight'?'spotlight_items':currentTable;const {error}=await db.from(table).delete().eq('id',id);if(error){say(error.message);return;}say('Deleted.');loadRecords();}
 function uploadMedia(id){currentUpload={id,table:currentTable,column:currentTable==='clients'?'logo_url':'cover_image_url'};const p=document.getElementById('filePicker');p.value='';p.accept='image/jpeg,image/png,image/webp,image/gif';p.click();}
 document.getElementById('filePicker').addEventListener('change',async e=>{
- const file=e.target.files[0];if(!file||!currentUpload)return;const {id,table,column,kind='image'}=currentUpload;
+ const file=e.target.files[0];if(!file||!currentUpload)return;let {id,table,column,kind='image',pendingRecord}=currentUpload;
  const imageTypes=['image/jpeg','image/png','image/webp','image/gif'];const videoTypes=['video/mp4','video/webm','video/quicktime'];
  if(kind==='image'&&!imageTypes.includes(file.type)){say('Choose JPG, PNG, WEBP or GIF image.');return;}
  if(kind==='video'&&!videoTypes.includes(file.type)){say('Choose MP4, WEBM or MOV video.');return;}
  if(file.size>50*1024*1024){say('Free storage upload limit is 50 MB per file.');return;}
+ if(pendingRecord){say('Saving content and uploading file...');const {data:created,error:insertErr}=await db.from(table).insert(pendingRecord).select().single();if(insertErr){say(insertErr.message);currentUpload=null;return;}id=created.id;currentUpload={id,table,column,kind};}
  const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const path=(kind==='video'?'videos/':'posts/')+Date.now()+'-'+safeName;
  say(kind==='video'?'Uploading video... please wait.':'Uploading image...');
  const {error:up}=await db.storage.from('royal-portfolio').upload(path,file,{upsert:false});if(up){say(up.message);return;}
