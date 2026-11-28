@@ -112,6 +112,21 @@ main {max-width:1100px;margin:auto;padding:24px 16px}
   .item-info {width:100%}
   .login {margin:8vh 15px}
 }
+
+/* Portfolio add-content modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:18px;z-index:9999}
+.modal-backdrop.show{display:flex}
+.content-modal{width:min(100%,520px);max-height:92vh;overflow:auto;background:#141414;border:1px solid #8c7029;border-radius:16px;padding:22px;box-shadow:0 18px 60px #000}
+.content-modal h2{margin:0 0 6px;color:var(--gold)}
+.content-modal .hint{font-size:12px;color:#aaa;margin:0 0 18px}
+.content-modal .field{margin:12px 0}
+.content-modal label{display:block;margin-bottom:5px;color:#ddd}
+.content-modal select,.content-modal input,.content-modal textarea{margin:0;background:#090909;border-color:#55451e}
+.content-modal .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.content-modal .secondary{background:#333;color:#fff}
+.content-modal .checkline{display:flex;align-items:center;gap:9px;margin-top:12px;color:#ddd;font-size:13px}
+.content-modal .checkline input{width:auto;margin:0;accent-color:var(--gold)}
+
 </style>
 </head>
 
@@ -164,6 +179,21 @@ main {max-width:1100px;margin:auto;padding:24px 16px}
 </div>
 
 <input type="file" id="filePicker" class="hidden" accept="image/*,video/mp4,video/webm,video/quicktime">
+
+
+<div class="modal-backdrop" id="portfolioModal" aria-hidden="true">
+ <form class="content-modal" id="portfolioForm">
+  <h2>Add Client Content</h2>
+  <p class="hint" id="portfolioClientHint">Choose the content type and source below.</p>
+  <div class="field"><label for="portfolioContentType">Content Type</label><select id="portfolioContentType"><option value="video">Video</option><option value="post">Post / Picture</option></select></div>
+  <div class="field"><label for="portfolioSource">Content Source</label><select id="portfolioSource"></select></div>
+  <div class="field"><label for="portfolioTitle">Title (optional)</label><input id="portfolioTitle" type="text" placeholder="e.g. Restaurant Promotional Reel"></div>
+  <div class="field"><label for="portfolioDescription">Description (optional)</label><textarea id="portfolioDescription" placeholder="Add a short description..."></textarea></div>
+  <div class="field hidden" id="portfolioUrlWrap"><label for="portfolioUrl" id="portfolioUrlLabel">Content URL</label><input id="portfolioUrl" type="url" placeholder="Paste public link here"></div>
+  <label class="checkline"><input id="portfolioPublish" type="checkbox" checked> Publish this content now</label>
+  <div class="modal-actions"><button type="button" class="secondary" id="portfolioCancel">Cancel</button><button type="submit">Continue</button></div>
+ </form>
+</div>
 
 <script>
 const SUPABASE_URL = "https://kwczmrtgzuijunwkvkej.supabase.co";
@@ -230,29 +260,50 @@ async function addPortfolioItem(){
  if(error||!clients?.length){say('Add clients first.');return;}
  let client=clients.find(c=>String(c.id)===String(activeClientId));
  if(!client){const list=clients.map((c,i)=>`${i+1}. ${c.name}`).join('\n');const n=Number(prompt('Choose client number:\n'+list));if(!n||!clients[n-1])return;client=clients[n-1];activeClientId=client.id;}
- const type=prompt(`Add content for ${client.name}. Type VIDEO or POST`,'VIDEO');if(!type)return;
- const t=type.trim().toLowerCase();if(!['video','post'].includes(t)){say('Enter VIDEO or POST.');return;}
- const title=prompt('Content title (optional)','');if(title===null)return;
- const description=prompt('Description (optional)','');if(description===null)return;
- const record={client_id:client.id,content_type:t,title,description,is_published:confirm('Publish this content now?')};
- if(t==='video'){
-   const method=prompt('Video source: UPLOAD, YOUTUBE, or INSTAGRAM','UPLOAD');if(!method)return;
-   const source=method.trim().toLowerCase();
-   if(source==='youtube'){const url=prompt('Paste YouTube video URL:');if(!url)return;if(!youtubeId(url)){say('Please enter a valid YouTube URL.');return;}record.youtube_url=url.trim();}
-   else if(source==='instagram'){const url=prompt('Paste public Instagram Reel / video URL:');if(!url)return;if(!instagramPermalink(url)){say('Please enter a valid public Instagram Reel / post URL.');return;}record.instagram_url=instagramPermalink(url);}
-   else if(source!=='upload'){say('Type UPLOAD, YOUTUBE or INSTAGRAM.');return;}
- }
- if(t==='post'){
-   const method=prompt('Post source: type IMAGE to upload a picture, or INSTAGRAM for a public Instagram post','IMAGE');if(!method)return;
-   const source=method.trim().toLowerCase();
-   if(source==='instagram'){const url=prompt('Paste public Instagram post / Reel URL:');if(!url)return;if(!instagramPermalink(url)){say('Please enter a valid public Instagram post / Reel URL.');return;}record.instagram_url=instagramPermalink(url);}
-   else if(source==='image'){const picker=document.getElementById('filePicker');picker.value='';picker.accept='image/*';currentUpload={pendingRecord:record,table:'client_portfolio_items',column:'image_url',kind:'image'};offerFilePicker('Tap Choose file from phone to select the post image.');return;}
-   else {say('Type IMAGE or INSTAGRAM.');return;}
- }
- if(t==='video'&&!record.youtube_url&&!record.instagram_url){const picker=document.getElementById('filePicker');picker.value='';picker.accept='video/mp4,video/webm,video/quicktime';currentUpload={pendingRecord:record,table:'client_portfolio_items',column:'video_file_url',kind:'video'};offerFilePicker('Tap Choose file from phone to select the video.');return;}
- const {error:insertError}=await db.from('client_portfolio_items').insert(record);
- if(insertError){say(insertError.message);return;}say(record.instagram_url?'Instagram content added.':record.youtube_url?'YouTube video added.':'Content added.');loadRecords();
+ document.getElementById('portfolioClientHint').textContent='Adding content for '+client.name+'. Choose options and continue.';
+ document.getElementById('portfolioContentType').value='video';
+ document.getElementById('portfolioTitle').value='';document.getElementById('portfolioDescription').value='';
+ document.getElementById('portfolioUrl').value='';document.getElementById('portfolioPublish').checked=true;
+ updatePortfolioSourceOptions();
+ const modal=document.getElementById('portfolioModal');modal.classList.add('show');modal.setAttribute('aria-hidden','false');
 }
+function updatePortfolioSourceOptions(){
+ const type=document.getElementById('portfolioContentType').value,source=document.getElementById('portfolioSource'),wrap=document.getElementById('portfolioUrlWrap'),url=document.getElementById('portfolioUrl'),label=document.getElementById('portfolioUrlLabel');
+ source.innerHTML=type==='video'?'<option value="upload">Upload Video</option><option value="youtube">YouTube Link</option><option value="instagram">Instagram Reel Link</option>':'<option value="image">Upload Image</option><option value="instagram">Instagram Post / Reel Link</option>';
+ updatePortfolioUrlField();
+}
+function updatePortfolioUrlField(){
+ const type=document.getElementById('portfolioContentType').value,source=document.getElementById('portfolioSource').value,wrap=document.getElementById('portfolioUrlWrap'),url=document.getElementById('portfolioUrl'),label=document.getElementById('portfolioUrlLabel');
+ const needsUrl=source==='youtube'||source==='instagram';wrap.classList.toggle('hidden',!needsUrl);url.required=needsUrl;
+ label.textContent=source==='youtube'?'YouTube Video URL':'Public Instagram Post / Reel URL';
+ url.placeholder=source==='youtube'?'https://youtu.be/...':'https://www.instagram.com/reel/...';
+}
+function closePortfolioModal(){const modal=document.getElementById('portfolioModal');modal.classList.remove('show');modal.setAttribute('aria-hidden','true');}
+document.getElementById('portfolioContentType').addEventListener('change',updatePortfolioSourceOptions);
+document.getElementById('portfolioSource').addEventListener('change',updatePortfolioUrlField);
+document.getElementById('portfolioCancel').addEventListener('click',closePortfolioModal);
+document.getElementById('portfolioModal').addEventListener('click',e=>{if(e.target.id==='portfolioModal')closePortfolioModal();});
+document.getElementById('portfolioForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const type=document.getElementById('portfolioContentType').value,source=document.getElementById('portfolioSource').value;
+ const title=document.getElementById('portfolioTitle').value.trim(),description=document.getElementById('portfolioDescription').value.trim();
+ const record={client_id:activeClientId,content_type:type,title,description,is_published:document.getElementById('portfolioPublish').checked};
+ if(source==='youtube'){
+  const value=document.getElementById('portfolioUrl').value.trim();if(!youtubeId(value)){say('Please enter a valid YouTube video URL.');return;}record.youtube_url=value;
+ }
+ if(source==='instagram'){
+  const value=document.getElementById('portfolioUrl').value.trim(),permalink=instagramPermalink(value);if(!permalink){say('Please enter a valid public Instagram Post / Reel URL.');return;}record.instagram_url=permalink;
+ }
+ closePortfolioModal();
+ if(source==='upload'||source==='image'){
+  const picker=document.getElementById('filePicker');picker.value='';picker.accept=type==='post'?'image/*':'video/mp4,video/webm,video/quicktime';
+  currentUpload={pendingRecord:record,table:'client_portfolio_items',column:type==='post'?'image_url':'video_file_url',kind:type==='post'?'image':'video'};
+  offerFilePicker(type==='post'?'Choose the post image from your phone.':'Choose the video from your phone.');return;
+ }
+ say('Saving content...');const {error}=await db.from('client_portfolio_items').insert(record);
+ if(error){say(error.message);return;}say(record.instagram_url?'Instagram content added successfully.':'YouTube video added successfully.');loadRecords();
+});
+
 function youtubeId(url){try{const u=new URL(url);if(u.hostname.includes('youtu.be'))return u.pathname.slice(1);if(u.hostname.includes('youtube.com'))return u.searchParams.get('v')||u.pathname.split('/').filter(Boolean).pop();}catch(e){}return ''; }
 function instagramPermalink(value){try{const u=new URL(value.trim());if(!['instagram.com','www.instagram.com'].includes(u.hostname.toLowerCase())||u.protocol!=='https:')return '';const parts=u.pathname.split('/').filter(Boolean);if(parts.length<2||!['p','reel','tv'].includes(parts[0]))return '';return 'https://www.instagram.com/'+parts[0]+'/'+encodeURIComponent(parts[1])+'/';}catch(e){return '';}}
 async function addSpotlightItem(){
