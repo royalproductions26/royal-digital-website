@@ -30,38 +30,40 @@
 
     html { scroll-behavior: smooth; }
 
-    body {
-      background: var(--bg);
-      color: var(--white);
-      font-family: 'DM Sans', sans-serif;
-      line-height: 1.7;
+    html {
+      background: #080808;
       position: relative;
+      min-height: 100%;
     }
 
-    /* Fixed watermark layer: visible above the page background, below content */
-    body::before {
+    /* Fixed watermark attached to the viewport, not the scrolling page */
+    html::before {
       content: "";
       position: fixed;
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      background-image: url("/royal-full-logo.png");
+      background-image: url("royal-full-logo.png");
       background-repeat: no-repeat;
       background-position: center center;
-      background-size: min(58vw, 620px) auto;
-      opacity: .10;
-      filter: saturate(.95);
+      background-size: min(62vw, 560px) auto;
+      opacity: .13;
     }
 
-    /* Keep all page content above the watermark */
-    body > * { position: relative; z-index: 1; }
-    header, .site-header, nav { z-index: 1000; }
-    .instagram-float { z-index: 1100; }
+    body {
+      background: transparent;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+    }
 
     @media (max-width: 700px) {
-      body::before {
-        background-size: min(88vw, 440px) auto;
-        opacity: .085;
+      html::before {
+        background-size: min(90vw, 420px) auto;
+        opacity: .12;
       }
     }
 
