@@ -35,6 +35,30 @@
       color: var(--white);
       font-family: 'DM Sans', sans-serif;
       line-height: 1.7;
+      isolation: isolate;
+      position: relative;
+    }
+
+    /* Fixed gold brand watermark: stays still while page content scrolls */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image: url("royal-full-logo.png");
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: min(58vw, 620px) auto;
+      opacity: .055;
+      filter: saturate(.9);
+    }
+
+    @media (max-width: 700px) {
+      body::before {
+        background-size: min(88vw, 440px) auto;
+        opacity: .045;
+      }
     }
 
     a { color: inherit; text-decoration: none; }
@@ -409,6 +433,8 @@
     .comparison-table tbody tr:hover { background:rgba(212,175,55,.055); }
     .comparison-table td:first-child { color:#f5df9e; font-weight:800; white-space:nowrap; }
     .comparison-table td:last-child { color:var(--gold); font-weight:800; white-space:nowrap; }
+    .comparison-table td.comparison-discount-price { color:#fff; font-weight:900; white-space:nowrap; }
+    .comparison-table td.comparison-savings { color:#e8c96e; font-weight:900; white-space:nowrap; }
     .individual-plans { margin:0 0 20px; padding:24px; border:1px solid rgba(212,175,55,.22); border-radius:20px; background:radial-gradient(ellipse at 100% 0%,rgba(212,175,55,.09),transparent 38%),#0d0d0d; }
     .individual-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
     .individual-card { position:relative; display:flex; flex-direction:column; min-width:0; min-height:210px; background:linear-gradient(155deg,#1a1a1a,#0c0c0c 78%); border:1px solid rgba(212,175,55,.3); border-radius:15px; padding:20px; transition:transform .25s,border-color .25s,box-shadow .25s; }
@@ -1390,15 +1416,21 @@
           const isStartup = title === 'Startup Plans';
           return `<section class="package-group"><div class="package-group-heading"><span class="package-group-index">${isStartup?'01':'02'}</span><div><h3 class="package-group-title">${title}</h3><p class="package-group-subtitle">${isStartup?'A strong start for ambitious new businesses':'Advanced creative support for growing brands'}</p></div></div><div class="package-group-grid">${items.map(packageCard).join('')}</div></section>`;
         }
+        const packageValues = { basic:12000, growth:18000, premium:27000, platinum:40000 };
+        const money = value => `₹${Number(value).toLocaleString('en-IN')}`;
         const tableRows = data.map(pkg => {
           const price = Number(pkg.starting_price);
-          const priceText = Number.isFinite(price) && price > 0 ? `₹${price.toLocaleString('en-IN')}` : 'Custom Quote';
+          const priceText = Number.isFinite(price) && price > 0 ? money(price) : 'Custom Quote';
+          const name = String(pkg.name || '').toLowerCase();
+          const key = Object.keys(packageValues).find(k => name.includes(k));
+          const individualValue = key ? packageValues[key] : null;
+          const savings = individualValue !== null && Number.isFinite(price) ? individualValue - price : null;
           const features = Array.isArray(pkg.features) ? pkg.features.join(', ') : String(pkg.features || 'Custom content plan');
           const compact = features.replace(/[\r\n]+/g, ' ').replace(/[•;]/g, ' · ');
-          return `<tr><td>${escapeHTML(pkg.name || 'Package')}</td><td>${escapeHTML(compact.slice(0,150))}${compact.length>150?'…':''}</td><td>${priceText}</td></tr>`;
+          return `<tr><td>${escapeHTML(pkg.name || 'Package')}</td><td>${escapeHTML(compact.slice(0,150))}${compact.length>150?'…':''}</td><td>${individualValue !== null ? money(individualValue) : '—'}</td><td class="comparison-discount-price">${priceText}</td><td class="comparison-savings">${savings !== null && savings >= 0 ? money(savings) : '—'}</td></tr>`;
         }).join('');
         grid.innerHTML = groupHTML('Startup Plans', startup) + groupHTML('Professional Plans', professional) + (other.length ? groupHTML('More Packages', other) : '') + `
-          <section class="comparison-wrap"><div class="pricing-section-heading"><span class="heading-mark">▤</span><div><h3 class="comparison-title">Pricing Comparison</h3><p class="pricing-section-note">Compare inclusions and starting prices at a glance</p></div></div><div class="comparison-table-shell"><table class="comparison-table"><thead><tr><th>Package</th><th>Included Content</th><th>Starting Price</th></tr></thead><tbody>${tableRows}</tbody></table></div></section>
+          <section class="comparison-wrap"><div class="pricing-section-heading"><span class="heading-mark">▤</span><div><h3 class="comparison-title">Pricing Comparison</h3><p class="pricing-section-note">See the individual value, your package price and total savings</p></div></div><div class="comparison-table-shell"><table class="comparison-table"><thead><tr><th>Package</th><th>Included Content</th><th>Individual Value</th><th>Package Price</th><th>You Save</th></tr></thead><tbody>${tableRows}</tbody></table></div></section>
           <section class="individual-plans"><div class="pricing-section-heading"><span class="heading-mark">✦</span><div><h3 class="individual-title">Individual Services</h3><p class="pricing-section-note">Flexible one-time creative services, without a monthly commitment</p></div></div><div class="individual-grid">
             <article class="individual-card"><span class="individual-icon">▶</span><h4>Professional Reel Production</h4><div class="individual-price">₹2,500</div><p>1 Reel · 30 seconds · Shoot + Editing</p><a class="package-details-btn" href="#contact">Enquire Now <span aria-hidden="true">→</span></a></article>
             <article class="individual-card"><span class="individual-icon">▧</span><h4>Creative Social Media Post</h4><div class="individual-price">₹500</div><p>1 creative post · Design + Editing</p><a class="package-details-btn" href="#contact">Enquire Now <span aria-hidden="true">→</span></a></article>
