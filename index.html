@@ -388,31 +388,53 @@
 
     /* PRICING */
 
-    .pricing-grid { display:block; }
-    .package-group { margin: 0 0 38px; }
-    .package-group-title { color:var(--gold); font-size:24px; margin:0 0 16px; letter-spacing:.4px; }
+    .pricing-grid { display:block; position:relative; }
+    .package-group { position:relative; margin:0 0 48px; padding:24px; border:1px solid rgba(212,175,55,.22); border-radius:20px; background:radial-gradient(ellipse at 8% 0%,rgba(212,175,55,.10),transparent 42%),linear-gradient(145deg,#111 0%,#090909 72%); box-shadow:0 18px 45px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.035); overflow:hidden; }
+    .package-group:before { content:""; position:absolute; top:0; left:24px; width:76px; height:2px; background:linear-gradient(90deg,var(--gold),transparent); }
+    .package-group-heading { display:flex; align-items:center; gap:14px; margin:0 0 22px; }
+    .package-group-index { display:grid; place-items:center; width:42px; height:42px; flex:0 0 42px; border:1px solid rgba(212,175,55,.55); border-radius:13px; color:var(--gold); background:rgba(212,175,55,.09); font-size:14px; font-weight:800; letter-spacing:1px; }
+    .package-group-title { color:#f8e5ae; font-size:clamp(20px,2.4vw,27px); margin:0; letter-spacing:.2px; }
+    .package-group-subtitle { color:#999; font-size:12px; margin:4px 0 0; letter-spacing:.35px; }
     .package-group-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; align-items:stretch; }
-    .comparison-wrap { margin:42px 0 48px; }
-    .comparison-title, .individual-title { color:var(--gold); font-size:24px; margin:0 0 16px; }
-    .comparison-table { width:100%; border-collapse:collapse; background:#101010; border:1px solid var(--gold); }
-    .comparison-table th,.comparison-table td { padding:13px 14px; border:1px solid #5a4820; text-align:left; font-size:14px; }
-    .comparison-table th { color:var(--gold); background:#18140a; }
-    .individual-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
-    .individual-card { background:#111; border:1px solid var(--gold); border-radius:6px; padding:20px; }
-    .individual-card h4 { margin:0 0 8px; font-size:17px; }
-    .individual-card .individual-price { color:var(--gold); font-weight:800; font-size:22px; margin:8px 0 12px; }
-    .individual-card p { color:var(--muted); font-size:13px; margin:0 0 14px; }
-    .individual-card .package-details-btn { display:inline-block; background:var(--gold); color:#080808; border:1px solid var(--gold); border-radius:3px; padding:10px 18px; font-weight:800; text-align:center; }
+    .comparison-wrap { margin:0 0 48px; padding:24px; border-radius:20px; border:1px solid rgba(212,175,55,.35); background:linear-gradient(145deg,#15130e,#090909 75%); box-shadow:0 18px 45px rgba(0,0,0,.3); }
+    .pricing-section-heading { display:flex; align-items:center; gap:12px; margin:0 0 18px; }
+    .pricing-section-heading .heading-mark { width:36px; height:36px; display:grid; place-items:center; border-radius:11px; background:rgba(212,175,55,.12); color:var(--gold); border:1px solid rgba(212,175,55,.4); font-size:17px; }
+    .comparison-title, .individual-title { color:#f8e5ae; font-size:clamp(20px,2.4vw,26px); margin:0; }
+    .pricing-section-note { color:#999; font-size:12px; margin:4px 0 0; }
+    .comparison-table-shell { overflow-x:auto; border:1px solid rgba(212,175,55,.25); border-radius:14px; }
+    .comparison-table { width:100%; min-width:560px; border-collapse:separate; border-spacing:0; background:#0d0d0d; }
+    .comparison-table th,.comparison-table td { padding:15px 16px; border-bottom:1px solid #29251a; text-align:left; font-size:13px; line-height:1.55; }
+    .comparison-table th { color:#f2d98e; background:linear-gradient(180deg,#282113,#19150d); font-size:11px; text-transform:uppercase; letter-spacing:1px; }
+    .comparison-table tbody tr:last-child td { border-bottom:0; }
+    .comparison-table tbody tr:hover { background:rgba(212,175,55,.055); }
+    .comparison-table td:first-child { color:#f5df9e; font-weight:800; white-space:nowrap; }
+    .comparison-table td:last-child { color:var(--gold); font-weight:800; white-space:nowrap; }
+    .individual-plans { margin:0 0 20px; padding:24px; border:1px solid rgba(212,175,55,.22); border-radius:20px; background:radial-gradient(ellipse at 100% 0%,rgba(212,175,55,.09),transparent 38%),#0d0d0d; }
+    .individual-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+    .individual-card { position:relative; display:flex; flex-direction:column; min-width:0; min-height:210px; background:linear-gradient(155deg,#1a1a1a,#0c0c0c 78%); border:1px solid rgba(212,175,55,.3); border-radius:15px; padding:20px; transition:transform .25s,border-color .25s,box-shadow .25s; }
+    .individual-card:hover { transform:translateY(-5px); border-color:var(--gold); box-shadow:0 14px 32px rgba(212,175,55,.10); }
+    .individual-card:before { content:""; position:absolute; top:0; left:20px; right:20px; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+    .individual-icon { width:38px; height:38px; display:grid; place-items:center; margin-bottom:16px; border-radius:12px; color:var(--gold); background:rgba(212,175,55,.10); border:1px solid rgba(212,175,55,.28); font-size:18px; }
+    .individual-card h4 { margin:0 0 8px; font-size:15px; line-height:1.4; color:#f4f0e7; }
+    .individual-card .individual-price { color:var(--gold); font-weight:850; font-size:23px; margin:4px 0 10px; }
+    .individual-card p { color:#a5a5a5; font-size:12px; line-height:1.6; margin:0 0 18px; flex:1; }
+    .individual-card .package-details-btn { display:block; background:linear-gradient(135deg,#f2d68d,#c49a3a); color:#100d06; border:1px solid #e4c36d; border-radius:9px; padding:11px 14px; font-size:12px; font-weight:850; text-align:center; box-shadow:0 5px 15px rgba(212,175,55,.12); }
+    @media (max-width:800px) { .individual-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
     @media (max-width:600px) {
-      .package-group-grid { gap:9px; }
-      .package-group-title,.comparison-title,.individual-title { font-size:19px; }
-      .comparison-table th,.comparison-table td { padding:8px 6px; font-size:10px; }
-      .individual-grid { gap:9px; }
-      .individual-card { padding:12px 10px; }
-      .individual-card h4 { font-size:13px; }
-      .individual-card .individual-price { font-size:16px; }
+      .package-group,.comparison-wrap,.individual-plans { padding:15px 12px; border-radius:15px; margin-bottom:28px; }
+      .package-group-heading { gap:10px; margin-bottom:15px; }
+      .package-group-index { width:34px; height:34px; flex-basis:34px; border-radius:10px; font-size:12px; }
+      .package-group-title { font-size:18px; }
+      .package-group-subtitle,.pricing-section-note { font-size:10px; }
+      .package-group-grid { gap:10px; }
+      .comparison-table th,.comparison-table td { padding:11px 10px; font-size:11px; }
+      .individual-grid { gap:10px; }
+      .individual-card { min-height:190px; padding:14px 11px; border-radius:12px; }
+      .individual-icon { width:32px; height:32px; margin-bottom:11px; font-size:15px; }
+      .individual-card h4 { font-size:12px; }
+      .individual-card .individual-price { font-size:18px; }
       .individual-card p { font-size:10px; }
-      .individual-card .package-details-btn { padding:8px 6px; font-size:10px; width:100%; }
+      .individual-card .package-details-btn { padding:9px 5px; font-size:10px; }
     }
 
     .price-card {
@@ -431,6 +453,16 @@
       border-color: var(--gold);
       background: #111111;
     }
+    .price-card { position:relative; overflow:hidden; border:1px solid rgba(212,175,55,.32); border-radius:16px; padding:24px; background:linear-gradient(155deg,#1b1a17 0%,#101010 55%,#0b0b0b 100%); box-shadow:0 14px 35px rgba(0,0,0,.26); transition:transform .25s,border-color .25s,box-shadow .25s; }
+    .price-card:before { content:""; position:absolute; inset:0 0 auto; height:2px; background:linear-gradient(90deg,transparent,#d4af37 45%,#f4df9b 55%,transparent); opacity:.8; }
+    .price-card:hover { transform:translateY(-5px); border-color:rgba(212,175,55,.85); box-shadow:0 18px 40px rgba(212,175,55,.09); }
+    .price-card.featured { border-color:rgba(212,175,55,.78); background:radial-gradient(ellipse at 100% 0%,rgba(212,175,55,.13),transparent 45%),linear-gradient(155deg,#201b10,#101010 65%); }
+    .plan-card-top { display:flex; align-items:center; gap:9px; margin-bottom:15px; }
+    .plan-card-icon { width:34px; height:34px; display:grid; place-items:center; border-radius:10px; color:var(--gold); background:rgba(212,175,55,.11); border:1px solid rgba(212,175,55,.35); font-size:17px; }
+    .plan-card-label { color:#bda96e; font-size:9px; font-weight:800; letter-spacing:1.5px; }
+    .price-card .package-details-btn { border-radius:9px; background:linear-gradient(135deg,#f2d68d,#c49a3a); border-color:#e4c36d; padding:12px 18px; box-shadow:0 6px 18px rgba(212,175,55,.13); }
+    .price-card .package-details-btn span { margin-left:8px; font-size:16px; }
+    @media(max-width:600px) { .price-card { padding:15px 12px; border-radius:12px; } .price-card h3 { font-size:15px; } .price-label { font-size:17px; } .package-features { font-size:10px; padding-left:14px; } .package-features li { margin-bottom:6px; line-height:1.4; } .price-card p { font-size:10px; margin-bottom:12px; } .price-card .package-details-btn { width:100%; padding:9px 5px; font-size:10px; } .plan-card-icon { width:27px;height:27px;font-size:13px; } .plan-card-label { font-size:7px;letter-spacing:.8px; } }
 
     .price-card .package-features { flex: 1 1 auto; }
     .price-card .package-details-btn {
@@ -1344,7 +1376,10 @@
             features = features[0].split(/(?=\s*(?:\d+\s+(?:Professional Videos|Premium Creative Posts|Creative Social Media Posts|AI Videos|Extended Videos)|Basic Captions|Advanced Captions|Basic Content Planning|Content Planning|Strategic Content Planning|Monthly Content Shoot|Monthly Shoot|Professional Video Editing|Social Media Content Planning|Brand-focused Content|Brand Promotion|Creative Brand Promotion|Creative Campaign Planning|Brand Growth Strategy|Dedicated Priority Support|Priority Creative Support|Priority Support|Complete Social Media Management|Performance Monitoring))/i).map(item => item.trim()).filter(Boolean);
           }
           const featuresHTML = features.length ? `<ul class="package-features">${features.map(feature => `<li>${escapeHTML(feature)}</li>`).join('')}</ul>` : '';
-          return `<article class="price-card"><h3>${escapeHTML(pkg.name || 'Creative Package')}</h3><div class="price-label">${priceHTML}</div>${pkg.description ? `<p>${escapeHTML(pkg.description)}</p>` : ''}${featuresHTML}<a class="package-details-btn" href="#contact">Get Details</a></article>`;
+          const planName = String(pkg.name || 'Creative Package');
+          const planIcon = /basic/i.test(planName) ? '✦' : /growth/i.test(planName) ? '↗' : /premium/i.test(planName) ? '♛' : /platinum/i.test(planName) ? '◆' : '✧';
+          const isFeatured = /growth|platinum/i.test(planName) ? ' featured' : '';
+          return `<article class="price-card${isFeatured}"><div class="plan-card-top"><span class="plan-card-icon">${planIcon}</span><span class="plan-card-label">${/basic|growth/i.test(planName)?'STARTUP PLAN':'PROFESSIONAL PLAN'}</span></div><h3>${escapeHTML(planName)}</h3><div class="price-label">${priceHTML}</div>${pkg.description ? `<p>${escapeHTML(pkg.description)}</p>` : ''}${featuresHTML}<a class="package-details-btn" href="#contact">Get Details <span aria-hidden="true">→</span></a></article>`;
         }
         const startup = data.filter(pkg => /basic|growth/i.test(pkg.name || ''));
         const professional = data.filter(pkg => /premium|platinum/i.test(pkg.name || ''));
@@ -1352,7 +1387,8 @@
         const other = data.filter(pkg => !used.has(pkg.id));
         function groupHTML(title, items) {
           if (!items.length) return '';
-          return `<section class="package-group"><h3 class="package-group-title">${title}</h3><div class="package-group-grid">${items.map(packageCard).join('')}</div></section>`;
+          const isStartup = title === 'Startup Plans';
+          return `<section class="package-group"><div class="package-group-heading"><span class="package-group-index">${isStartup?'01':'02'}</span><div><h3 class="package-group-title">${title}</h3><p class="package-group-subtitle">${isStartup?'A strong start for ambitious new businesses':'Advanced creative support for growing brands'}</p></div></div><div class="package-group-grid">${items.map(packageCard).join('')}</div></section>`;
         }
         const tableRows = data.map(pkg => {
           const price = Number(pkg.starting_price);
@@ -1362,12 +1398,12 @@
           return `<tr><td>${escapeHTML(pkg.name || 'Package')}</td><td>${escapeHTML(compact.slice(0,150))}${compact.length>150?'…':''}</td><td>${priceText}</td></tr>`;
         }).join('');
         grid.innerHTML = groupHTML('Startup Plans', startup) + groupHTML('Professional Plans', professional) + (other.length ? groupHTML('More Packages', other) : '') + `
-          <section class="comparison-wrap"><h3 class="comparison-title">Pricing Comparison</h3><div style="overflow-x:auto"><table class="comparison-table"><thead><tr><th>Package</th><th>Included Content</th><th>Starting Price</th></tr></thead><tbody>${tableRows}</tbody></table></div></section>
-          <section class="individual-plans"><h3 class="individual-title">Individual Plans</h3><div class="individual-grid">
-            <article class="individual-card"><h4>Professional Reel Production</h4><div class="individual-price">₹2,500</div><p>1 Reel · 30 seconds · Shoot + Editing</p><a class="package-details-btn" href="#contact">Get Details</a></article>
-            <article class="individual-card"><h4>Creative Social Media Post</h4><div class="individual-price">₹500</div><p>1 creative post · Design + Editing</p><a class="package-details-btn" href="#contact">Get Details</a></article>
-            <article class="individual-card"><h4>AI Video</h4><div class="individual-price">₹1,000</div><p>1 AI-generated video · 10 seconds</p><a class="package-details-btn" href="#contact">Get Details</a></article>
-            <article class="individual-card"><h4>Voice / Audio Content</h4><div class="individual-price">Custom Quote</div><p>Personal song or background narration</p><a class="package-details-btn" href="#contact">Get Details</a></article>
+          <section class="comparison-wrap"><div class="pricing-section-heading"><span class="heading-mark">▤</span><div><h3 class="comparison-title">Pricing Comparison</h3><p class="pricing-section-note">Compare inclusions and starting prices at a glance</p></div></div><div class="comparison-table-shell"><table class="comparison-table"><thead><tr><th>Package</th><th>Included Content</th><th>Starting Price</th></tr></thead><tbody>${tableRows}</tbody></table></div></section>
+          <section class="individual-plans"><div class="pricing-section-heading"><span class="heading-mark">✦</span><div><h3 class="individual-title">Individual Services</h3><p class="pricing-section-note">Flexible one-time creative services, without a monthly commitment</p></div></div><div class="individual-grid">
+            <article class="individual-card"><span class="individual-icon">▶</span><h4>Professional Reel Production</h4><div class="individual-price">₹2,500</div><p>1 Reel · 30 seconds · Shoot + Editing</p><a class="package-details-btn" href="#contact">Enquire Now <span aria-hidden="true">→</span></a></article>
+            <article class="individual-card"><span class="individual-icon">▧</span><h4>Creative Social Media Post</h4><div class="individual-price">₹500</div><p>1 creative post · Design + Editing</p><a class="package-details-btn" href="#contact">Enquire Now <span aria-hidden="true">→</span></a></article>
+            <article class="individual-card"><span class="individual-icon">✧</span><h4>AI Video</h4><div class="individual-price">₹1,000</div><p>1 AI-generated video · 10 seconds</p><a class="package-details-btn" href="#contact">Enquire Now <span aria-hidden="true">→</span></a></article>
+            <article class="individual-card"><span class="individual-icon">♫</span><h4>Voice / Audio Content</h4><div class="individual-price">Custom Quote</div><p>Personal song or background narration</p><a class="package-details-btn" href="#contact">Enquire Now <span aria-hidden="true">→</span></a></article>
           </div></section>`;
 
       } catch (error) {
