@@ -35,29 +35,33 @@
       color: var(--white);
       font-family: 'DM Sans', sans-serif;
       line-height: 1.7;
-      isolation: isolate;
       position: relative;
     }
 
-    /* Fixed gold brand watermark: stays still while page content scrolls */
+    /* Fixed watermark layer: visible above the page background, below content */
     body::before {
       content: "";
       position: fixed;
       inset: 0;
-      z-index: -1;
+      z-index: 0;
       pointer-events: none;
-      background-image: url("royal-full-logo.png");
+      background-image: url("/royal-full-logo.png");
       background-repeat: no-repeat;
       background-position: center center;
       background-size: min(58vw, 620px) auto;
-      opacity: .055;
-      filter: saturate(.9);
+      opacity: .10;
+      filter: saturate(.95);
     }
+
+    /* Keep all page content above the watermark */
+    body > * { position: relative; z-index: 1; }
+    header, .site-header, nav { z-index: 1000; }
+    .instagram-float { z-index: 1100; }
 
     @media (max-width: 700px) {
       body::before {
         background-size: min(88vw, 440px) auto;
-        opacity: .045;
+        opacity: .085;
       }
     }
 
