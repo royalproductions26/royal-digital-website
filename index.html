@@ -692,7 +692,7 @@
   <header>
     <div class="container navbar">
       <a class="header-logo" href="#home">
-        <img src="logo-gold.jpg" alt="Royal Digital">
+        <img src="logo-gold.png" alt="Royal Digital">
       </a>
 
       <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
@@ -1099,6 +1099,27 @@
       } catch (e) { return ''; }
     }
 
+    // INSTAGRAM PUBLIC POST / REEL EMBED
+    function instagramPermalink(value) {
+      if (!value) return '';
+      try {
+        const u = new URL(value);
+        if (u.protocol !== 'https:' || !['instagram.com','www.instagram.com'].includes(u.hostname.toLowerCase())) return '';
+        const parts = u.pathname.split('/').filter(Boolean);
+        if (parts.length < 2 || !['p','reel','tv'].includes(parts[0])) return '';
+        return 'https://www.instagram.com/' + parts[0] + '/' + encodeURIComponent(parts[1]) + '/';
+      } catch (e) { return ''; }
+    }
+    function loadInstagramEmbeds() {
+      if (window.instgrm && window.instgrm.Embeds) { window.instgrm.Embeds.process(); return; }
+      if (document.getElementById('instagram-embed-script')) return;
+      const script = document.createElement('script');
+      script.id = 'instagram-embed-script'; script.async = true;
+      script.src = 'https://www.instagram.com/embed.js';
+      script.onload = () => { if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process(); };
+      document.body.appendChild(script);
+    }
+
     // ROYAL DIGITAL SPOTLIGHT
     async function loadSpotlight() {
       const grid = document.getElementById('spotlightGrid');
@@ -1226,16 +1247,20 @@
       grid.innerHTML = '<p class="muted">Loading...</p>';
       try {
         const {data,error} = await supabaseClient.from('client_portfolio_items')
-          .select('id,client_id,content_type,title,description,youtube_url,video_file_url,image_url,is_published,display_order,created_at')
+          .select('id,client_id,content_type,title,description,youtube_url,video_file_url,image_url,instagram_url,is_published,display_order,created_at')
           .eq('client_id',activeClientId).eq('is_published',true)
           .eq('content_type',activeClientContent).order('display_order',{ascending:true}).order('created_at',{ascending:false});
         if(error) throw error;
         if(!data || !data.length){grid.innerHTML=`<p class="muted">No ${activeClientContent === 'video' ? 'videos' : 'posts'} added for this client yet.</p>`;return;}
         grid.innerHTML = data.map(item => {
+          const instagram = instagramPermalink(item.instagram_url);
           const media = activeClientContent === 'video' ? (safeMediaURL(item.video_file_url) || youtubeEmbed(item.youtube_url)) : safeMediaURL(item.image_url);
-          if(!media) return '';
-          return `<article class="client-work-card">${activeClientContent === 'video' ? (item.video_file_url ? `<video controls playsinline preload="metadata" style="width:100%;aspect-ratio:16/9;object-fit:contain;background:#000;border-radius:7px"><source src="${media}"></video>` : `<iframe src="${media}" title="${escapeHTML(item.title || 'Client video')}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`) : `<img src="${media}" alt="${escapeHTML(item.title || 'Client creative')}" loading="lazy">`}<div class="work-kind">${activeClientContent === 'video' ? 'Video' : 'Creative Post'}</div>${item.title ? `<h3>${escapeHTML(item.title)}</h3>` : ''}${item.description ? `<p>${escapeHTML(item.description)}</p>` : ''}</article>`;
+          if(!media && !instagram) return '';
+          const instagramBlock = instagram ? `<div class="instagram-embed-wrap"><blockquote class="instagram-media" data-instgrm-permalink="${escapeHTML(instagram)}" data-instgrm-version="14" style="background:#fff;border:0;border-radius:8px;margin:0 auto;max-width:540px;min-width:280px;padding:0;width:100%"><a href="${escapeHTML(instagram)}" target="_blank" rel="noopener">View this post on Instagram</a></blockquote></div>` : '';
+          const mediaBlock = activeClientContent === 'video' ? (item.video_file_url ? `<video controls playsinline preload="metadata" style="width:100%;aspect-ratio:16/9;object-fit:contain;background:#000;border-radius:7px"><source src="${media}"></video>` : (item.youtube_url ? `<iframe src="${media}" title="${escapeHTML(item.title || 'Client video')}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` : '')) : (item.image_url ? `<img src="${media}" alt="${escapeHTML(item.title || 'Client creative')}" loading="lazy">` : '');
+          return `<article class="client-work-card">${instagramBlock || mediaBlock}<div class="work-kind">${activeClientContent === 'video' ? (instagram ? 'Instagram Video' : 'Video') : (instagram ? 'Instagram Post' : 'Creative Post')}</div>${item.title ? `<h3>${escapeHTML(item.title)}</h3>` : ''}${item.description ? `<p>${escapeHTML(item.description)}</p>` : ''}</article>`;
         }).join('') || `<p class="muted">No ${activeClientContent === 'video' ? 'videos' : 'posts'} available.</p>`;
+        if(grid.querySelector('.instagram-media')) loadInstagramEmbeds();
       } catch(error){console.error('Client portfolio error:',error);grid.innerHTML='<p class="muted">Client portfolio is temporarily unavailable.</p>';}
     }
     document.getElementById('clientGrid').addEventListener('click',function(e){const card=e.target.closest('[data-client-id]');if(card)openClientPortfolio(card.dataset.clientId,card.dataset.clientName);});
