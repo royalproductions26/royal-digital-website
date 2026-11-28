@@ -390,7 +390,7 @@
 
     .pricing-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 18px;
       align-items: stretch;
     }
@@ -688,10 +688,18 @@
 
       .services-grid,
       .portfolio-grid,
-      .why-grid,
-      .pricing-grid {
+      .why-grid {
         grid-template-columns: 1fr;
       }
+
+      .pricing-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+      }
+      .price-card { padding: 10px 7px; }
+      .price-card h3 { font-size: 12px; }
+      .price-card .package-details-btn { padding: 7px 4px; font-size: 10px; width: 100%; }
+      .price-card p, .price-card li { font-size: 9px; line-height: 1.35; }
 
       .client-grid { grid-template-columns: repeat(2, 1fr); }
 
