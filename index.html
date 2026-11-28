@@ -390,19 +390,44 @@
 
     .pricing-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 18px;
+      align-items: stretch;
     }
 
     .price-card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      padding: 32px 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 0;
+      height: 100%;
+      background: #111111;
+      border: 1px solid var(--gold);
+      border-radius: 6px;
+      padding: 28px 24px;
     }
 
     .price-card.featured {
       border-color: var(--gold);
-      background: linear-gradient(145deg, #17140e, #111111);
+      background: #111111;
+    }
+
+    .price-card .package-features { flex: 1 1 auto; }
+    .price-card .package-details-btn {
+      display: inline-block;
+      margin-top: auto;
+      background: var(--gold);
+      color: #080808;
+      border: 1px solid var(--gold);
+      border-radius: 3px;
+      padding: 13px 25px;
+      font-weight: 800;
+      text-align: center;
+    }
+    .price-card .package-details-btn:hover {
+      background: var(--gold-light);
+      color: #080808;
+      transform: translateY(-2px);
     }
 
     .price-card h3 {
@@ -1329,7 +1354,7 @@
               <div class="price-label">${priceHTML}</div>
               ${pkg.description ? `<p>${escapeHTML(pkg.description)}</p>` : ''}
               ${featuresHTML}
-              <a class="${index === 1 ? 'btn' : 'btn-outline'}" href="#contact">Get Details</a>
+              <a class="package-details-btn" href="#contact">Get Details</a>
             </article>
           `;
         }).join('');
